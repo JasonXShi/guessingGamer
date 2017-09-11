@@ -1,10 +1,12 @@
 #include <iostream>
 #include <cstdlib>
+#include <time.h>
 
 using namespace std;
 
 int main(){
   //variables to keep track of players guess, the number, and whether they want to continue playing
+  srand(time(NULL));
   bool stillPlaying = true;
   int randomNumber;
   int input;

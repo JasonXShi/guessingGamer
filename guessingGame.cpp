@@ -1,3 +1,7 @@
+//Kevin Men
+//9/11/17
+//Guessing game
+//This program generates a random number 0-100 and the user tries to guess it
 #include <iostream>
 #include <cstdlib>
 #include <time.h>

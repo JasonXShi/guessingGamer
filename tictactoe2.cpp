@@ -2,7 +2,7 @@
 Kevin Men
 Tictactoe
 A 2 player tictactoe game where moves are made using a coordinate system
-10/3/17
+10/11/17
  */
 #include <iostream>
 #include <cstring>
@@ -27,9 +27,15 @@ bool checkTie(int boardState[3][3]);
   int row;
   int column;
   char response[2];
+  int xwins;
+  int owins;
   cout << "Welcome to tictactoe" << endl;
   cout << "Use coordinates to chose your move" << endl;
   cout << "X goes first" << endl;
+  cout << " A    B    C" << endl;
+  cout << "1" << endl;
+  cout << "2" << endl;
+  cout << "3" << endl;
   //while the game is still going
   while(stillPlaying){
     //clears the board before each game
@@ -74,8 +80,14 @@ bool checkTie(int boardState[3][3]);
     if(checkTie(boardState) == true && checkWin(boardState, X_MOVE) == false && checkWin(boardState, O_MOVE) == false){
       cout << "Tie game! Would you like to keep player?(y/n)" << endl;
     }else if(currentTurn == X_TURN){
+      owins++;
+      cout << "O has won " << owins << " times" << endl;
+      cout << "X has won " << xwins << " times" << endl;
       cout << "O wins! Would you like to keep playing?(y/n)" << endl;
     }else {
+      xwins++;
+      cout << "O has won " << owins << " times" << endl;
+      cout << "X has won " << xwins << " times" << endl;
       cout << "X wins! Would you like to keep playing?(y/n)" << endl;
     }
     cin.get(response, 2);

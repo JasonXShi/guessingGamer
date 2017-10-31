@@ -30,6 +30,7 @@ int main(){
   char command[10];
   bool quit = false;
   //vector to keep track of students
+  //vector help from: http://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm
   vector<Student*> v;
   //characteristics of a student
   char firstName[20];
@@ -96,6 +97,7 @@ Student* addStudent(char firstName[20], char lastName[20], int id, float gpa){
   pNewStudent->gpa = gpa;
 }
 //deletes a student
+//iterator help from: https://stackoverflow.com/questions/33218031/print-a-vector-using-iterator-c
 void deleteStudent(vector<Student*> &v, int inputID){
   //loops through the vector, finds the student, and deletes it
   for(vector<Student*>::iterator it = v.begin(); it!=v.end(); ++it){

@@ -2,36 +2,57 @@
 #include <cstring>
 #include <vector>
 #include "digitalMedia.h"
-
+#include "videoGame.h"
 using namespace std;
 
-//adds a videogame
-void addVideoGame(){
-
-}
-//adds music
-void addMusic(){
-
-}
-//adds a movie
-void addMovie(){
-
-}
 //prints out a media 
-void printMedia(){
-
+void printMedia(digitalMedia* media){
+  int type = media->getType();
+  cout << endl;
+  cout << "Title: " << media->getTitle() << endl;
+  cout << "Year: " << media->getYear() << endl;
+  if(type == 1){
+    //VIDEO GAME
+    cout << "Publisher: " << ((videoGame*) media)->getPublisher() << endl;
+    cout << "Rating: " << ((videoGame*) media)->getRating() << endl;
+  }else if (type == 2){
+    //MUSIC
+    //cout << "Artist: " << media->getArtist() << endl;
+    //cout << "Duration(s): " << media->getDuration() << endl;
+    //cout << "Publisher: " << media->getPublisher() << endl;
+  }else{
+    //MOVIE
+  }
+  
 }
-//delets a media
+//deletes a media
 void deleteMedia(){
 
 }
 //searches through vector by title
-void searchMediaByTitle(int state){
-
+void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> v){
+  for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
+    if(strcmp((*it)->getTitle(), searchTitle)==0){
+      if(state == 0){
+	//deleteMedia(*it);
+      }else{
+	printMedia(*it);
+      }
+    }
+  }
 }
 //searches through vector by year
-void searchMediaByYear(int state){
-
+void searchMediaByYear(int state, int searchYear, vector<digitalMedia*> v){
+  for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
+    if( (*it)->getYear() == searchYear){
+      if(state == 0){
+	//deleteMedia(*it);
+	break;
+      }else{
+	printMedia(*it);
+      }
+    }
+  }
 }
 
 int main(){
@@ -56,6 +77,7 @@ int main(){
   cout << "DELETE- Delete an item" << endl;
   cout << "QUIT- Quits the program" << endl;
   while(!quit){
+    //TYPES: 1-VIDEOGAME 2-MUSIC 3-MOVIE
     cout << "Enter a command" << endl;
     cin.getline(command, 10, '\n');
     if(strcmp(command, "ADD") == 0){
@@ -68,35 +90,45 @@ int main(){
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "What year was the videogame published" << endl;
 	cin >> mediaYear;
+	cin.get();
 	cout << "Who is the publisher of this game?" << endl;
 	cin.getline(mediaPublisher, 50, '\n');
 	cout << "What is the rating of the game?" << endl;
 	cin >> mediaRating;
-	addVideoGame();
+	cin.get();
+	videoGame* tempGame = new videoGame(mediaTitle, mediaYear, mediaPublisher, mediaRating, 1);
+	v.push_back(tempGame);
+	cout << "Done" << endl;
       }else if(strcmp(mediaType, "music") == 0){
 	//ADD A SONG
 	cout << "What is the name of the song?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
-	cout << "What year was the song published?" << endl;
+ 	cout << "What year was the song published?" << endl;
 	cin >> mediaYear;
+	cin.get();
 	cout << "How long is the song (in seconds)" << endl;
 	cin >> mediaDuration;
+	cin.get();
 	cout << "Who is the publisher of this song?" << endl;
 	cin.getline(mediaPublisher, 50, '\n');
-	addMusic();
-      }else{
+	
+      }else if(strcmp(mediaType, "movie") == 0){
 	//ADD A MOVIE
 	cout << "What is the name of the movie?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "What is year was the movie published?" << endl;
 	cin >> mediaYear;
+	cin.get();
 	cout << "Who is the director of the movie?" << endl;
 	cin.getline(mediaDirector, 50, '\n');
 	cout << "How long is the movie? (in minutes)" << endl;
 	cin >> mediaDuration;
+	cin.get();
 	cout << "What is the rating of this movie?" << endl;
 	cin >> mediaRating;
-	addMovie();
+	cin.get();
+      }else {
+	  cout << "NOT A VALID MEDIA TYPE" << endl;
       }
       //STATES: 0-DELETE 1-PRINT
     }else if(strcmp(command, "DELETE") == 0){
@@ -105,21 +137,28 @@ int main(){
       cin.getline(searchType, 10, '\n');
       if(strcmp(searchType, "title") == 0){
 	//SEARCH BY TITLE AND DELETE
-	searchMediaByTitle(0);
+	//searchMediaByTitle(0);
       }else{
 	//SEARCH BY YEAR AND DELETE
-	searchMediaByYear(0);
+	//searchMediaByYear(0);
       }
     }else if(strcmp(command, "SEARCH") == 0){
       //SEARCH COMMAND
-      cout << "Which method would you like to search by? (title/year" << endl;
+      cout << "Which method would you like to search by? (title/year)" << endl;
       cin.getline(searchType, 10, '\n');
       if(strcmp(searchType, "title") == 0){
 	//SEARCH BY TITLE AND PRINT
-	searchMediaByTitle(1);
-      }else{
+	cout << "What is the title of the media?" << endl;
+	cin.getline(searchTitle, 100, '\n');
+	searchMediaByTitle(1, searchTitle, v);
+      }else if (strcmp(searchType, "year") == 0){
 	//SEARCH BY YEAR AND PRINT
-	searchMediaByYear(1);
+	cout << "What year was the media published?" << endl;
+	cin >> searchYear;
+	cin.get();
+	searchMediaByYear(1, searchYear, v);
+      }else{
+	cout << "INVALID SEARCH TYPE" << endl;
       }
     }else if(strcmp(command, "QUIT") == 0){
       //QUITS PROGRAM
@@ -129,7 +168,7 @@ int main(){
     }
     
   }//end of while loop
-  
+  return 0;
 }//end of main method
 
 

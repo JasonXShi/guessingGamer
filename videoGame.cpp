@@ -4,7 +4,7 @@
 
 using namespace std;
 
-videoGame::videoGame(char* newTitle, int newYear, char* newPublisher, float newRating) : digitalMedia(newTitle, newYear){
+videoGame::videoGame(char* newTitle, int newYear, char* newPublisher, float newRating, int newType) : digitalMedia(newTitle, newYear, newType){
   publisher = newPublisher;
   rating = newRating;
 }

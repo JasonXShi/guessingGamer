@@ -7,12 +7,15 @@ using namespace std;
 
 class digitalMedia {
  public:
-  digitalMedia(char* newTitle, int newYear);
+  digitalMedia(char* newTitle, int newYear, int newType);
   int getYear();
   char* getTitle();
+  int getType();
  private:
   char* title;
   int year;
+ protected:
+  int type;
  
 };
 #endif /*DIGITALMEDIA_H*/

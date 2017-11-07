@@ -4,7 +4,8 @@
 
 using namespace std;
 
-digitalMedia::digitalMedia(char* newTitle, int newYear) {
+digitalMedia::digitalMedia(char* newTitle, int newYear, int newType) {
+  type = newType;
   title = newTitle;
   year = newYear;
 }
@@ -13,4 +14,7 @@ char* digitalMedia::getTitle() {
 }
 int digitalMedia::getYear() {
   return year;
+}
+int digitalMedia::getType(){
+  return type;
 }

@@ -59,12 +59,9 @@ int main(){
   vector<digitalMedia*> v;
   bool quit = false;
   //media information
-  char mediaTitle[100];
   int mediaYear;
-  char mediaPublisher[50];
   int mediaDuration;
   float mediaRating;
-  char mediaDirector[50];
   char command[10];
   char mediaType[10];
   char searchType[10];
@@ -86,6 +83,8 @@ int main(){
       cin.getline(mediaType, 10, '\n');
       if(strcmp(mediaType, "videogame") == 0){
 	//ADD A VIDEOGAME
+	char* mediaTitle = new char[100];
+	char* mediaPublisher = new char[50];
 	cout << "What is the name of the videogame" << endl;
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "What year was the videogame published" << endl;
@@ -101,9 +100,11 @@ int main(){
 	cout << "Done" << endl;
       }else if(strcmp(mediaType, "music") == 0){
 	//ADD A SONG
+	char* mediaTitle = new char[100];
+	char* mediaPublisher = new char[50];
 	cout << "What is the name of the song?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
- 	cout << "What year was the song published?" << endl;
+	cout << "What year was the song published?" << endl;
 	cin >> mediaYear;
 	cin.get();
 	cout << "How long is the song (in seconds)" << endl;
@@ -114,6 +115,9 @@ int main(){
 	
       }else if(strcmp(mediaType, "movie") == 0){
 	//ADD A MOVIE
+	char* mediaTitle = new char[100];
+	char* mediaPublisher = new char[50];
+	char mediaDirector[50];
 	cout << "What is the name of the movie?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "What is year was the movie published?" << endl;

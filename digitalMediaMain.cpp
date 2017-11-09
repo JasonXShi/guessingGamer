@@ -3,6 +3,8 @@
 #include <vector>
 #include "digitalMedia.h"
 #include "videoGame.h"
+#include "music.h"
+#include "movie.h"
 using namespace std;
 
 //prints out a media 
@@ -17,11 +19,14 @@ void printMedia(digitalMedia* media){
     cout << "Rating: " << ((videoGame*) media)->getRating() << endl;
   }else if (type == 2){
     //MUSIC
-    //cout << "Artist: " << media->getArtist() << endl;
-    //cout << "Duration(s): " << media->getDuration() << endl;
-    //cout << "Publisher: " << media->getPublisher() << endl;
+    cout << "Artist: " << ((music*) media)->getArtist() << endl;
+    cout << "Duration(s): " << ((music*) media)->getDuration() << endl;
+    cout << "Publisher: " << ((music*) media)->getPublisher() << endl;
   }else{
     //MOVIE
+    cout << "Director: " << ((movie*) media)->getDirector() << endl;
+    cout << "Duration(m): " << ((movie*) media)->getDuration() << endl;
+    cout << "Rating: " << ((movie*) media)->getRating() << endl;
   }
   
 }
@@ -102,8 +107,11 @@ int main(){
 	//ADD A SONG
 	char* mediaTitle = new char[100];
 	char* mediaPublisher = new char[50];
+	char* mediaArtist = new char[50];
 	cout << "What is the name of the song?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
+	cout << "Who is the artist of this song?" << endl;
+	cin.getline(mediaArtist, 50, '\n');
 	cout << "What year was the song published?" << endl;
 	cin >> mediaYear;
 	cin.get();
@@ -112,12 +120,13 @@ int main(){
 	cin.get();
 	cout << "Who is the publisher of this song?" << endl;
 	cin.getline(mediaPublisher, 50, '\n');
-	
+	music* tempSong = new music(mediaTitle, mediaYear, mediaArtist, mediaPublisher, mediaDuration, 2);
+	v.push_back(tempSong);
       }else if(strcmp(mediaType, "movie") == 0){
 	//ADD A MOVIE
 	char* mediaTitle = new char[100];
 	char* mediaPublisher = new char[50];
-	char mediaDirector[50];
+	char* mediaDirector = new char[50];
 	cout << "What is the name of the movie?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "What is year was the movie published?" << endl;
@@ -131,6 +140,8 @@ int main(){
 	cout << "What is the rating of this movie?" << endl;
 	cin >> mediaRating;
 	cin.get();
+	movie* tempMovie = new movie(mediaTitle, mediaYear, mediaDirector, mediaRating, mediaDuration, 3);
+	v.push_back(tempMovie);
       }else {
 	  cout << "NOT A VALID MEDIA TYPE" << endl;
       }

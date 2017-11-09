@@ -31,7 +31,7 @@ void printMedia(digitalMedia* media){
   
 }
 //deletes a media
-void deleteMedia(){
+void deleteMedia(digitalMedia* media, vector<digitalMedia*> &v){
 
 }
 //searches through vector by title
@@ -39,7 +39,7 @@ void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> v){
   for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
     if(strcmp((*it)->getTitle(), searchTitle)==0){
       if(state == 0){
-	//deleteMedia(*it);
+	deleteMedia(*it, v);
       }else{
 	printMedia(*it);
       }
@@ -152,10 +152,12 @@ int main(){
       cin.getline(searchType, 10, '\n');
       if(strcmp(searchType, "title") == 0){
 	//SEARCH BY TITLE AND DELETE
-	//searchMediaByTitle(0);
-      }else{
+	searchMediaByTitle(0, searchTitle, v);
+      }else if(strcmp(searchType, "year") == 0){
 	//SEARCH BY YEAR AND DELETE
-	//searchMediaByYear(0);
+	searchMediaByYear(0, searchYear, v);
+      }else{
+	cout << "INVALID PRINT TYPE" << endl;
       }
     }else if(strcmp(command, "SEARCH") == 0){
       //SEARCH COMMAND

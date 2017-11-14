@@ -30,16 +30,15 @@ void printMedia(digitalMedia* media){
   }
   
 }
-//deletes a media
-void deleteMedia(digitalMedia* media, vector<digitalMedia*> &v){
 
-}
 //searches through vector by title
-void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> v){
+void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
   for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
     if(strcmp((*it)->getTitle(), searchTitle)==0){
       if(state == 0){
-	deleteMedia(*it, v);
+	//deletes media
+	delete(*it);
+	v.erase(it);
       }else{
 	printMedia(*it);
       }
@@ -51,7 +50,9 @@ void searchMediaByYear(int state, int searchYear, vector<digitalMedia*> v){
   for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
     if( (*it)->getYear() == searchYear){
       if(state == 0){
-	//deleteMedia(*it);
+	//deletes media
+	delete(*it);
+	v.erase(it);
 	break;
       }else{
 	printMedia(*it);
@@ -72,6 +73,11 @@ int main(){
   char searchType[10];
   float searchYear;
   char searchTitle[100];
+  char sureDelete[2];
+  char* mediaTitle;
+  char* mediaPublisher;
+  char* mediaArtist;
+  char* mediaDirector;
   //introduction
   cout << "Welcome to digital media" << endl;
   cout << "ADD- Add a digital media for the database" << endl;
@@ -88,8 +94,8 @@ int main(){
       cin.getline(mediaType, 10, '\n');
       if(strcmp(mediaType, "videogame") == 0){
 	//ADD A VIDEOGAME
-	char* mediaTitle = new char[100];
-	char* mediaPublisher = new char[50];
+	mediaTitle = new char[100];
+	mediaPublisher = new char[50];
 	cout << "What is the name of the videogame" << endl;
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "What year was the videogame published" << endl;
@@ -105,9 +111,9 @@ int main(){
 	cout << "Done" << endl;
       }else if(strcmp(mediaType, "music") == 0){
 	//ADD A SONG
-	char* mediaTitle = new char[100];
-	char* mediaPublisher = new char[50];
-	char* mediaArtist = new char[50];
+	mediaTitle = new char[100];
+	mediaPublisher = new char[50];
+	mediaArtist = new char[50];
 	cout << "What is the name of the song?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "Who is the artist of this song?" << endl;
@@ -124,9 +130,9 @@ int main(){
 	v.push_back(tempSong);
       }else if(strcmp(mediaType, "movie") == 0){
 	//ADD A MOVIE
-	char* mediaTitle = new char[100];
-	char* mediaPublisher = new char[50];
-	char* mediaDirector = new char[50];
+	mediaTitle = new char[100];
+	mediaPublisher = new char[50];
+	mediaDirector = new char[50];
 	cout << "What is the name of the movie?" << endl;
 	cin.getline(mediaTitle, 100, '\n');
 	cout << "What is year was the movie published?" << endl;
@@ -146,16 +152,31 @@ int main(){
 	  cout << "NOT A VALID MEDIA TYPE" << endl;
       }
       //STATES: 0-DELETE 1-PRINT
-    }else if(strcmp(command, "DELETE") == 0){
+    }else
+      
+        if(strcmp(command, "DELETE") == 0){
       //DELETE COMMAND
       cout << "Which method would you like to delete by? (title/year)" << endl;
       cin.getline(searchType, 10, '\n');
       if(strcmp(searchType, "title") == 0){
 	//SEARCH BY TITLE AND DELETE
-	searchMediaByTitle(0, searchTitle, v);
-      }else if(strcmp(searchType, "year") == 0){
+	cout << "What is the name of the media you wish to delete?" << endl;
+	cin.getline(searchTitle, 100, '\n');
+	cout << "Are you sure? Type y to delete." << endl;
+        cin.getline(sureDelete, 2, '\n');
+	if(strcmp(sureDelete, "y") == 0){
+	    searchMediaByTitle(0, searchTitle, v);
+	  }
+    }else if(strcmp(searchType, "year") == 0){
 	//SEARCH BY YEAR AND DELETE
-	searchMediaByYear(0, searchYear, v);
+	cout << "What is the year that the media you with to delete was published?" <<  endl;
+	cin >> searchYear;
+	cin.get();
+	cout << "Are you sure? Type y to delete." << endl;
+	cin.getline(sureDelete, 2, '\n');
+	if(strcmp(sureDelete, "y") == 0){
+	  searchMediaByYear(0, searchYear, v);
+	}
       }else{
 	cout << "INVALID PRINT TYPE" << endl;
       }

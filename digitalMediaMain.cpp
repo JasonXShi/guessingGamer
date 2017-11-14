@@ -34,8 +34,8 @@ void printMedia(digitalMedia* media){
 //searches through vector by title
 void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
   char response[2];
-  bool stillFind = true;
-  while(stillFind){
+  bool stillFind = false;
+  do {
     //loops through vector and finds matching titles
     for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
       if(strcmp((*it)->getTitle(), searchTitle)==0){
@@ -47,6 +47,7 @@ void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
 	  if(strcmp(response, "y")==0){
 	    delete(*it);
 	    v.erase(it);
+	    stillFind = true;
 	    break;
 	  } 
 	}else{
@@ -55,8 +56,8 @@ void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
 	}
       }
     }
-    stillFind = false;
-  }
+    
+  }while(stillFind);
 }
 //searches through vector by year
 void searchMediaByYear(int state, int searchYear, vector<digitalMedia*> v){
@@ -65,7 +66,6 @@ void searchMediaByYear(int state, int searchYear, vector<digitalMedia*> v){
   //loops through vector and finds matching years
   do {
     stillFind = false;
-    cout << "STARTING UP..." << endl;
     for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
       if( (*it)->getYear() == searchYear){
 	if(state == 0){
@@ -86,7 +86,7 @@ void searchMediaByYear(int state, int searchYear, vector<digitalMedia*> v){
       }
     }
    
-  } while(stillFind = true);
+  } while(stillFind);
 }
 
 int main(){

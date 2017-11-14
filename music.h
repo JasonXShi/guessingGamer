@@ -5,6 +5,7 @@ using namespace std;
 class music : public digitalMedia {
  public:
   music(char* newTitle, int newYear, char* newArtist, char* newPublisher, float newDuration, int newType);
+  virtual ~music();
   char* getArtist();
   char* getPublisher();
   float getDuration();

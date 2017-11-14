@@ -33,32 +33,60 @@ void printMedia(digitalMedia* media){
 
 //searches through vector by title
 void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
-  for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
-    if(strcmp((*it)->getTitle(), searchTitle)==0){
-      if(state == 0){
-	//deletes media
-	delete(*it);
-	v.erase(it);
-      }else{
-	printMedia(*it);
+  char response[2];
+  bool stillFind = true;
+  while(stillFind){
+    //loops through vector and finds matching titles
+    for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
+      if(strcmp((*it)->getTitle(), searchTitle)==0){
+	if(state == 0){
+	  //deletes media
+	  printMedia(*it);
+	  cout << "Would you like to delete?" << endl;
+	  cin.getline(response, 2);
+	  if(strcmp(response, "y")==0){
+	    delete(*it);
+	    v.erase(it);
+	    break;
+	  } 
+	}else{
+	  //prints media
+	  printMedia(*it);
+	}
       }
     }
+    stillFind = false;
   }
 }
 //searches through vector by year
 void searchMediaByYear(int state, int searchYear, vector<digitalMedia*> v){
-  for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
-    if( (*it)->getYear() == searchYear){
-      if(state == 0){
-	//deletes media
-	delete(*it);
-	v.erase(it);
-	break;
-      }else{
-	printMedia(*it);
+  char response[2];
+  bool stillFind = false;
+  //loops through vector and finds matching years
+  do {
+    stillFind = false;
+    cout << "STARTING UP..." << endl;
+    for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
+      if( (*it)->getYear() == searchYear){
+	if(state == 0){
+	  //deletes media
+	  printMedia(*it);
+	  cout << "Would you like to delete?" << endl;
+	  cin.getline(response, 2, '\n');
+	  if(strcmp(response, "y") == 0){
+	    delete(*it);
+	    v.erase(it);
+	    stillFind = true;
+	    break;
+	  }
+	}else{
+	  //prints media
+	  printMedia(*it);
+	}
       }
     }
-  }
+   
+  } while(stillFind = true);
 }
 
 int main(){
@@ -162,22 +190,15 @@ int main(){
 	//SEARCH BY TITLE AND DELETE
 	cout << "What is the name of the media you wish to delete?" << endl;
 	cin.getline(searchTitle, 100, '\n');
-	cout << "Are you sure? Type y to delete." << endl;
-        cin.getline(sureDelete, 2, '\n');
-	if(strcmp(sureDelete, "y") == 0){
-	    searchMediaByTitle(0, searchTitle, v);
-	  }
+        searchMediaByTitle(0, searchTitle, v);
     }else if(strcmp(searchType, "year") == 0){
 	//SEARCH BY YEAR AND DELETE
 	cout << "What is the year that the media you with to delete was published?" <<  endl;
 	cin >> searchYear;
 	cin.get();
-	cout << "Are you sure? Type y to delete." << endl;
-	cin.getline(sureDelete, 2, '\n');
-	if(strcmp(sureDelete, "y") == 0){
-	  searchMediaByYear(0, searchYear, v);
-	}
+        searchMediaByYear(0, searchYear, v);
       }else{
+	//invalid command
 	cout << "INVALID PRINT TYPE" << endl;
       }
     }else if(strcmp(command, "SEARCH") == 0){
@@ -196,13 +217,15 @@ int main(){
 	cin.get();
 	searchMediaByYear(1, searchYear, v);
       }else{
+	//invalid command
 	cout << "INVALID SEARCH TYPE" << endl;
       }
     }else if(strcmp(command, "QUIT") == 0){
       //QUITS PROGRAM
       quit = true;
-    }else{
-      cout << "NOT A VALID COMMAND" << endl;
+	}else{
+	  //not a valid command
+	  cout << "NOT A VALID COMMAND" << endl;
     }
     
   }//end of while loop

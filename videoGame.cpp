@@ -14,3 +14,6 @@ char* videoGame::getPublisher(){
 float videoGame::getRating(){
   return rating;
 }
+videoGame::~videoGame(){
+  delete publisher;
+}

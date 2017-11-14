@@ -18,3 +18,6 @@ int digitalMedia::getYear() {
 int digitalMedia::getType(){
   return type;
 }
+digitalMedia::~digitalMedia(){
+  delete title;
+}

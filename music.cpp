@@ -16,3 +16,7 @@ char* music::getPublisher(){
 float music::getDuration(){
   return duration;
 }
+music::~music(){
+  delete artist;
+  delete publisher; 
+}

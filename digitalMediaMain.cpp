@@ -35,7 +35,7 @@ void printMedia(digitalMedia* media){
 void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
   char response[2];
   //loops through vector and finds matching titles
-  for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end(); ++it){
+  for(vector<digitalMedia*>::iterator it = v.begin(); it!=v.end();){
     if(strcmp((*it)->getTitle(), searchTitle)==0){
       if(state == 0){
 	//deletes media
@@ -51,6 +51,7 @@ void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
       }else{
 	//prints media
 	printMedia(*it);
+	++it;
       }
     }else{
       ++it;
@@ -97,7 +98,7 @@ int main(){
   int mediaYear;
   int mediaDuration;
   float mediaRating;
-  char command[10];
+  char command[100];
   char mediaType[10];
   char searchType[10];
   float searchYear;
@@ -113,10 +114,11 @@ int main(){
   cout << "SEARCH- Search for a digital media based off its title or year" << endl;
   cout << "DELETE- Delete an item" << endl;
   cout << "QUIT- Quits the program" << endl;
+  cout << "NOTE: Rating is a 0-5 star rating" << endl;
   while(!quit){
     //TYPES: 1-VIDEOGAME 2-MUSIC 3-MOVIE
     cout << "Enter a command" << endl;
-    cin.getline(command, 10, '\n');
+    cin.getline(command, 100, '\n');
     if(strcmp(command, "ADD") == 0){
       //ADD COMMAND
       cout << "What type of media would you like to add? (videogame, music, movie)" << endl;

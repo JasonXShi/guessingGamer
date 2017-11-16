@@ -1,3 +1,9 @@
+/*
+Kevin Men
+Classes
+11/16/17
+This program allows for the user to create a database of various media types
+*/
 #include <iostream>
 #include <cstring>
 #include <vector>

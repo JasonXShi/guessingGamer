@@ -15,6 +15,7 @@ using namespace std;
 
 //prints out a media 
 void printMedia(digitalMedia* media){
+  //checks which type of media
   int type = media->getType();
   cout << endl;
   cout << "Title: " << media->getTitle() << endl;
@@ -46,9 +47,11 @@ void searchMediaByTitle(int state, char* searchTitle, vector<digitalMedia*> &v){
       if(state == 0){
 	//deletes media
 	printMedia(*it);
+	//confirms deletion for each item
 	cout << "Would you like to delete? (type y to delete)" << endl;
 	cin.getline(response, 2);
 	if(strcmp(response, "y")==0){
+	  //does not increment iterator when we delete to maintain the correct iterator position
 	  delete(*it);
 	  it = v.erase(it);
 	}else{
@@ -75,9 +78,11 @@ void searchMediaByYear(int state, int searchYear, vector<digitalMedia*> &v){
 	  if(state == 0){
 	    //deletes media
 	    printMedia(*it);
+	    //confirms deletion for each item
 	    cout << "Would you like to delete? (type y to delete)" << endl;
 	    cin.getline(response, 2, '\n');
 	    if(strcmp(response, "y") == 0){
+	      //does not increment iterator when we delete to maintain the correct iterator position
 	      delete(*it);
 	      it = v.erase(it);
 	    }else{
@@ -124,6 +129,7 @@ int main(){
   while(!quit){
     //TYPES: 1-VIDEOGAME 2-MUSIC 3-MOVIE
     cout << "Enter a command" << endl;
+    //checks what the command was
     cin.getline(command, 100, '\n');
     if(strcmp(command, "ADD") == 0){
       //ADD COMMAND
@@ -192,7 +198,7 @@ int main(){
     }else
       
         if(strcmp(command, "DELETE") == 0){
-      //DELETES MEDIA(S)
+      //DELETES MEDIA(S), ASKS WHAT METHOD TO USE
       cout << "Which method would you like to delete by? (title/year)" << endl;
       cin.getline(searchType, 10, '\n');
       if(strcmp(searchType, "title") == 0){
@@ -211,7 +217,7 @@ int main(){
 	cout << "INVALID PRINT TYPE" << endl;
       }
     }else if(strcmp(command, "SEARCH") == 0){
-      //SEARCH FOR MEDIA
+      //SEARCH FOR MEDIA, ASKS WHAT METHOD TO USE
       cout << "Which method would you like to search by? (title/year)" << endl;
       cin.getline(searchType, 10, '\n');
       if(strcmp(searchType, "title") == 0){

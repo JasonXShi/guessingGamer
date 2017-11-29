@@ -3,14 +3,14 @@
 
 using namespace std;
 
-room::room(const char* newDescription, const char* newName){
+void room::room(const char* newDescription, const char* newName){
   description = newDescription;
   name = newName
 }
-room::addItem(item i){
+void room::addItem(item i){
   items.push_back(i);
 }
-room::removeItem(item i){
+void room::removeItem(item i){
   for(vector<item*>::iterator it = items.begin(); it!=items.end(); ++it){
     if(strcmp((*it)->description, i.description) == 0){
       items.erase(it);
@@ -24,11 +24,11 @@ const char* room::getName(){
 const char* room::getDescription(){
   return description;
 }
-room::displayExits(){
+void room::displayExits(){
   for(map<const char*, room*>::iterator it = exits.begin(); it!=exits.end(); ++it){
    
   }
 }
-room::addExit(char* direction, room room ){
+void room::addExit(const char* direction, room* room ){
   exits[direction] = room;
 }

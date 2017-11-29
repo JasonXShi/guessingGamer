@@ -59,54 +59,54 @@ int main(){
   room* bilgewater = new room("Fortune doesn't favor fools...", "Bilgewater");
   room* plagueJungles = new room("There's a monkey on a flying nimbus", "Plague Jungles");
 
-  freljord.addExit("EAST", piltover);
-  freljord.addItem(frozenHeart);
+  freljord->addExit("EAST", piltover);
+  freljord->addItem(frozenHeart);
   
-  piltover.addExit("WEST", freljord);
-  piltover.addExit("EAST", zaun);
+  piltover->addExit("WEST", freljord);
+  piltover->addExit("EAST", zaun);
 
-  zaun.addExit("WEST", piltover);
-  zaun.addExit("SOUTH", noxus);
+  zaun->addExit("WEST", piltover);
+  zaun->addExit("SOUTH", noxus);
 
-  shadowIsles.addExit("SOUTH", conquerorsSea);
+  shadowIsles->addExit("SOUTH", conquerorsSea);
 
-  noxus.addExit("NORTH", zaun);
-  noxus.addExit("SOUTH", icathia);
-  noxus.addItem(bloodThirster);
+  noxus->addExit("NORTH", zaun);
+  noxus->addExit("SOUTH", icathia);
+  noxus->addItem(bloodThirster);
 
-  ionia.addExit("SOUTH", guardiansSea);
+  ionia->addExit("SOUTH", guardiansSea);
 
-  conquerorsSea.addExit("NORTH", shadowIsles);
-  conquerorsSea.addExit("SOUTH", demacia);
-  conquerorsSea.addItem(phantomDancer);
+  conquerorsSea->addExit("NORTH", shadowIsles);
+  conquerorsSea->addExit("SOUTH", demacia);
+  conquerorsSea->addItem(phantomDancer);
 
-  demacia.addExit("NORTH", conquerorsSea);
-  demacia.addExit("EAST", shurima);
-  damacia.addItem(infinityEdge);
+  demacia->addExit("NORTH", conquerorsSea);
+  demacia->addExit("EAST", shurima);
+  damacia->addItem(infinityEdge);
 
-  shurima.addExit("WEST", demacia);
-  shurima.addExit("EAST", icathia);
-  shurima.addExit("SOUTH", kumungu);
+  shurima->addExit("WEST", demacia);
+  shurima->addExit("EAST", icathia);
+  shurima->addExit("SOUTH", kumungu);
 
-  icathia.addExit("WEST", shurima);
-  icathia.addExit("NORTH", noxus);
-  icathia.addExit("EAST", guardiansSea);
+  icathia->addExit("WEST", shurima);
+  icathia->addExit("NORTH", noxus);
+  icathia->addExit("EAST", guardiansSea);
 
-  guardiansSea.addExit("NORTH", ionia);
-  guardiansSea.addExit("WEST", icathia);
-  guardiansSea.addExit("SOUTH", bilgewater);
+  guardiansSea->addExit("NORTH", ionia);
+  guardiansSea->addExit("WEST", icathia);
+  guardiansSea->addExit("SOUTH", bilgewater);
 
-  kumungu.addExit("NORTH", shurima);
-  kumungu.addExit("SOUTH", plagueJungles);
-  kumungu.addExit("EAST", bandleCity);
-  kumungu.addItem(spiritVisage);
+  kumungu->addExit("NORTH", shurima);
+  kumungu->addExit("SOUTH", plagueJungles);
+  kumungu->addExit("EAST", bandleCity);
+  kumungu->addItem(spiritVisage);
 
-  bandleCity.addExit("WEST", kumungu);
-  bandleCity.addItem(deathcap);
+  bandleCity->addExit("WEST", kumungu);
+  bandleCity->addItem(deathcap);
 
-  bilgewater.addExit("NORTH", guardiansSea);
+  bilgewater->addExit("NORTH", guardiansSea);
 
-  plagueJungles.addExit("NORTH", kumungu);
+  plagueJungles->addExit("NORTH", kumungu);
 		  
 
   v.push_back(freljord);

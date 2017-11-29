@@ -1,7 +1,9 @@
 #include "room.h"
 #include <iostream>
 
-room::room(char* newDescription, char* newName){
+using namespace std;
+
+room::room(const char* newDescription, const char* newName){
   description = newDescription;
   name = newName
 }
@@ -16,14 +18,14 @@ room::removeItem(item i){
     }
   }
 }
-char* room::getName(){
+const char* room::getName(){
   return name;
 }
-char* room::getDescription(){
+const char* room::getDescription(){
   return description;
 }
 room::displayExits(){
-  for(map<char*, room*>::iterator it = exits.begin(); it!=exits.end(); ++it){
+  for(map<const char*, room*>::iterator it = exits.begin(); it!=exits.end(); ++it){
    
   }
 }

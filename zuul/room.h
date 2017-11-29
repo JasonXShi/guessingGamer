@@ -1,27 +1,29 @@
 #ifndef ROOM_H
 #define ROOM_H
+#include "item.h";
 #include <map>
 #include <vector>
 #include <iostream>
 
+using namespace std;
+/*
 struct item{
-  char description[50];
-};
+  const char* description[50];
+  };*/
 
 class room {
  public:
-  room(char* newDescription, char* newName);
-  char* getDescription();
+  room(const char* newDescription, const char* newName);
+  const char* getDescription();
   void displayExits();
   void addItem(item i);
   void removeItem(item i);
-  void displayExits();
-  void addExit(char* direction, room room);
-  char* getName();
+  void addExit(const char* direction, room* room);
+  const char* getName();
  private:
-  char* description;
-  char* name;
-  map<char*, room*> exits;
+  const char* description;
+  const char* name;
+  map<const char*, room*> exits;
   vector<item*> items;
 };
 

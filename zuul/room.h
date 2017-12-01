@@ -1,15 +1,14 @@
 #ifndef ROOM_H
 #define ROOM_H
-#include "item.h";
 #include <map>
 #include <vector>
 #include <iostream>
 
 using namespace std;
-/*
+
 struct item{
   const char* description[50];
-  };*/
+  };
 
 class room {
  public:

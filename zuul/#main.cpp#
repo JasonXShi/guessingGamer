@@ -132,6 +132,8 @@ int main(){
   cout << "Type DROP to drop an item" << endl;
     while(!wincondition(inventory)){
       char command[10];
+      cout << "You are in " << current->getName() << endl;
+      cout << current->getDescription() << endl;
       cout << "Enter a command" << endl;
       cin.getLine(command, 10, '\n');
       if(strcmp(command, "GO"){

@@ -12,6 +12,8 @@ An adventure game where the player is a character named Yasuo in the League of L
 #include <cstring>
 
 using namespace std;
+//win condition: player has both Infinity Edge AND Phantom Dancer
+//lose condition: player either goes to Ionia or picks up Rabadon's Deathcap
 //checks if the player has won
 bool winCondition(vector<item*> inventory){
   int itemCount = 0;

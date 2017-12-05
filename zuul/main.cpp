@@ -1,29 +1,25 @@
 /*
 Kevin Men
 Zuul
-11/26/17
-An adventure game
+12/4/17
+An adventure game where the player is a character named Yasuo in the League of Legends world known as Runeterra
  */
 #include <map>
 #include <iostream>
 #include "room.h"
-//comments
 #include <vector>
 #include <iterator>
 #include <cstring>
 
 using namespace std;
-
-/*struct item{
-  const char* description[50];
-};*/
-
+//checks if the player has won
 bool winCondition(vector<item*> inventory){
   int itemCount = 0;
+  //has both Phantom Dancer and Infinity Edge
   for(vector<item*>::iterator it = inventory.begin(); it!=inventory.end(); ++it){
-    if(strcmp((it*)->description, "Phantom Dancer") == 0){
+    if(strcmp((*it)->description, "Phantom Dancer") == 0){
       itemCount++;
-    }else if(strcmp((it*)->description, "Infinity Edge") == 0){
+    }else if(strcmp((*it)->description, "Infinity Edge") == 0){
       itemCount++;
     }
   }
@@ -31,17 +27,43 @@ bool winCondition(vector<item*> inventory){
     return true;
   }else { return false; }
 }
+//checks if the player has lost
+bool loseCondition(room* current, room* ionia, vector<item*> inventory){
+  //player is in ionia
+  if(current == ionia){
+    return true;
+  }
+  //player has deathcap
+  for(vector<item*>::iterator it = inventory.begin(); it!=inventory.end(); ++it){
+    if(strcmp((*it)->description, "Rabadon's Deathcap")==0){
+      return true;
+    }
+  }
+  return false;
+}
+//prints out the player's inventory
+void printInventory(vector<item*> inventory){
+  cout << "The following items are in your inventory:" << endl;
+  for(vector<item*>::iterator it = inventory.begin(); it!=inventory.end(); ++it){
+    cout << (*it)->description << endl;
+  }
+}
 
 int main(){
-  bool win = false;
   vector<room*> v;
+  //inventory and search words
   vector<item*> inventory;
+  char command[10];
+  char direction[10];
+  char itemName[50];    
+  //creates items and rooms
   item* frozenMallet = new item("Frozen Mallet");
   item* infinityEdge = new item("Infinity Edge");
   item* deathcap = new item("Rabadon's Deathcap");
   item* phantomDancer = new item("Phantom Dancer");
   item* bloodThirster = new item("Bloodthirster");
   item* spiritVisage = new item("Spirit Visage");
+  item* hourglass = new item("Zhonya's Hourglass");
   room* current;
   room* freljord = new room("ice hangs above your head...", "The Freljord");
   room* piltover = new room("tall buildings loom over you...", "Piltover");
@@ -58,9 +80,10 @@ int main(){
   room* bandleCity = new room("Was that a mushroom you just stepped on?", "Bandle City");
   room* bilgewater = new room("Fortune doesn't favor fools...", "Bilgewater");
   room* plagueJungles = new room("There's a monkey on a flying nimbus", "Plague Jungles");
-  
+
+  //adds exits and items to rooms
   freljord->addExit("EAST", piltover);
-  freljord->addItem(frozenHeart);
+  freljord->addItem(frozenMallet);
   
   piltover->addExit("WEST", freljord);
   piltover->addExit("EAST", zaun);
@@ -82,11 +105,12 @@ int main(){
 
   demacia->addExit("NORTH", conquerorsSea);
   demacia->addExit("EAST", shurima);
-  damacia->addItem(infinityEdge);
+  demacia->addItem(infinityEdge);
 
   shurima->addExit("WEST", demacia);
   shurima->addExit("EAST", icathia);
   shurima->addExit("SOUTH", kumungu);
+  shurima->addItem(hourglass);
 
   icathia->addExit("WEST", shurima);
   icathia->addExit("NORTH", noxus);
@@ -107,8 +131,9 @@ int main(){
   bilgewater->addExit("NORTH", guardiansSea);
 
   plagueJungles->addExit("NORTH", kumungu);
-		  
+
   
+  //adds all rooms to the vector
   v.push_back(freljord);
   v.push_back(piltover);
   v.push_back(zaun);
@@ -124,31 +149,58 @@ int main(){
   v.push_back(bandleCity);
   v.push_back(bilgewater);
   v.push_back(plagueJungles);
+  current = shurima;
+  //introduction
   cout << "Welcome to zuul! Your name is Yasuo, a man fasley accused or murder." << endl;
   cout << "You are in a fictional land known as Runeterra, where you must collect items for your build" << endl;
   cout << "In order to win, you must complete your core build." << endl;
   cout << "Type GO to go to another room" << endl;
   cout << "Type GET to pick up an item" << endl;
   cout << "Type DROP to drop an item" << endl;
-    while(!wincondition(inventory)){
-      char command[10];
+  cout << "Type QUIT to exit the game" << endl;
+  //while the player has not won/lost
+  while(!winCondition(inventory) && !loseCondition(current, ionia, inventory)){
+      //displays room information
+      cout << endl;
+      cout << "You are in " << current->getName() << endl;
+      cout << current->getDescription() << endl;
+      cout << "The exits are:" << endl;
+      current->displayExits();
+      current->displayItems();
+      printInventory(inventory);
+      cout << endl;
       cout << "Enter a command" << endl;
-      cin.getLine(command, 10, '\n');
-      if(strcmp(command, "GO"){
-	  cout << "Enter the direction you wish to travel" << endl;
-	  //set current room to the room you travel to
-	}else if(strcmp(command, "GET"){
-	    cout << "Enter the name of the item you wish to pick up" << endl;
-	    //add the item name the user specifies to the inventory
-	  }else if(strcmp(command, "DROP"){
-	      cout << "Enter the name of the item you wish to drop" << endl;
-	      //drop the item specified into the room
-	    }else{
-	      cout << "Not a valid command" << endl;
-	      cout << "Type GO to travel to go to another room" << endl;
-	      cout << "Type GET to pick up an item" << endl;
-	      cout << "Type DROP to drop an item" << endl;
-	    }
+      cin.getline(command, 10, '\n');
+      if(strcmp(command, "GO") == 0){
+	cout << "Enter the direction you wish to travel" << endl;
+	cin.getline(direction, 10, '\n');
+	//travels to another room based on the direction specified
+	current->travel(direction, current);
+      }else if(strcmp(command, "GET") == 0){
+	cout << "Enter the name of the item you wish to pick up" << endl;
+	cin.getline(itemName, 50, '\n');
+	//adds the item into the inventory
+	current->removeItem(itemName, inventory);
+      }else if(strcmp(command, "DROP") == 0){
+	cout << "Enter the name of the item you wish to drop" << endl;
+	cin.getline(itemName, 50, '\n');
+	//drops the item into the room
+	current->dropItem(itemName, inventory);
+      }else if(strcmp(command, "QUIT") == 0){
+	//quites the program
+	break;
+      }else{
+	cout << "Not a valid command" << endl;
+	cout << "Type GO to travel to go to another room" << endl;
+	cout << "Type GET to pick up an item" << endl;
+	cout << "Type DROP to drop an item" << endl;
+      }
     }//while loop
+  if(winCondition(inventory)){
+    cout << "Congratulations! You have won!" << endl;
+    cout << "Now that you have completed your core build you are able to 1v9 carry the game" << endl;
+  }else if(loseCondition(current, ionia, inventory)){
+    cout << "You lose because you are trolling like the filthy yasuo main you are and have been reported x9" << endl;
+  }
   
 }//main method

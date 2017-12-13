@@ -1,0 +1,18 @@
+#include "Node.h"
+
+Node::Node(Student* newStudent){
+  student = newStudent;
+}
+Node::~Node(){
+  next = null;
+  delete student;
+}
+Student* getStudent(){
+  return student;
+}
+void setNext(Node* nextNode){
+  next = nextNode;
+}
+Node* getNext(){
+  return next;
+}

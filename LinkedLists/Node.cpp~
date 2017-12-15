@@ -1,18 +1,19 @@
 #include "Node.h"
+#include <cstddef>
 
 Node::Node(Student* newStudent){
   student = newStudent;
 }
 Node::~Node(){
-  next = null;
+  next = NULL;
   delete student;
 }
-Student* getStudent(){
+Student* Node::getStudent(){
   return student;
 }
-void setNext(Node* nextNode){
+void Node::setNext(Node* nextNode){
   next = nextNode;
 }
-Node* getNext(){
+Node* Node::getNext(){
   return next;
 }

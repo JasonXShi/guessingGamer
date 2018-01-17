@@ -1,0 +1,25 @@
+#include "Node.h"
+#include "Student.h"
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+
+using namespace std;
+
+int main(){
+  bool quit = false;
+  char* command;
+   
+  cout << "Welcome to Linked Lists p2" << endl;
+  cout << "Here are the commands: " << endl;
+  cout << "ADD- Add a student to the list" << endl;
+  cout << "PRINT- Prints out all the students in the list" << endl;
+  cout << "DELETE- Delete a student from the list" << endl;
+  cout << "AVERAGE- Print out the average GPA of all students" << endl;
+  cout << "QUIT- Quits the program" << endl;
+  
+  while(!quit){
+    cout << "Enter a command" << endl;
+    
+  }//while loop
+}//main method

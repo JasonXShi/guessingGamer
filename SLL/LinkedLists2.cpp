@@ -5,8 +5,8 @@ Linked Lists Part 2
 Allows the user to create a list of students using linkedlists
 1/19/18
  */
-#include "Node.h"
-#include "Student.h"
+#include "node.h"
+#include "student.h"
 #include <cstring>
 #include <iomanip>
 #include <iostream>
@@ -14,52 +14,80 @@ Allows the user to create a list of students using linkedlists
 using namespace std;
 
 //Adds node to the end of the list
-void addNode(Student* student, Node* &head){
-  Node* current = head;
+void addNode(student* tempStudent, node* &head){
+  node* current = head;
   //if this is the first node
   if(current == NULL){
-    head = new Node(student);
+    head = new node();
+    head->setvalue(tempStudent);
   }else{
     //finds the last node in the list and adds the node to the end
-    while(current->getNext() != NULL){
-      current = current->getNext();
+    while(current->getnext() != NULL){
+      current = current->getnext();
     }
-    current->setNext(new Node(student));
+    //add the node to the end of the list
+    current->setnext(new node());
+    current->getnext()->setvalue(tempStudent);
   }
 }
 //loops through the entire list and prints out the contents
-void printList(Node* next){
+void printList(node* next){
   if(next != NULL){
-    cout << next->getStudent()->getFirstName() << " " << next->getStudent()->getLastName() << ", " << next->getStudent()->getID() << ", " << next->getStudent()->getGPA() << endl;							        printList(next->getNext());
+    cout << next->getvalue()->getFirstName() << " " << next->getvalue()->getLastName() << ", " << next->getvalue()->getID() << ", " << next->getvalue()->getGPA() << endl;
+    //uses recursion to print the list
+    printList(next->getnext());
   }
 }
 //prints out the average by dividing the sum of all gpas by the number of students
-void findAverage(Node* &current){
+void findAverage(node* current){
   float GPASum = 0;
   float studentCounter = 0;
   while(current != NULL){
-    GPASum = GPASum + current->getStudent()->getID();
+    //adds all the GPA'S together, while keeping track of the number of students
+    GPASum = GPASum + current->getvalue()->getGPA();
     studentCounter = studentCounter + 1;
+    current = current->getnext();
   }
-  cout << GPASum/studentCounter << endl;
+  cout << "Average GPA of all students: " << GPASum/studentCounter << endl;
 }
-void deleteNode(Node* &head, int ID){
-  Node* current = head;
+void deleteNode(node* &head, int ID){
+  node* current = head;
+  node* previous = NULL;
   //loops through the list and deletes the node
   //then adjusts the previous node
   while(current != NULL){
-    if(current->getNext()->getStudent()->getID() == ID){
+    if(current->getvalue()->getID() == ID){
       //DELETE THE STUDENT FOUND
+      //if this isn't the first node, then set the previous node's next equal to the node after the deleted student
+      if(previous != NULL){
+	previous->setnext(current->getnext());
+	//if this is the first node
+      }else{
+	//if there is a node after this node, set it equal to the next
+	if(head->getnext() != NULL){
+	  head = head->getnext();
+	}else{
+	  //if this is the only node, set it equal to null
+	  head = NULL;
+	}
+      }
+      //delete the student
+      delete(current);
       //SET NEXT EQUAL TO THE NEXT OF THE NEXT
       return;
+    }else{
+      //set previous equal to the current and increment current
+      previous = current;
+      current = current->getnext();
     }
   }
+  //if the student was not found
   cout << "Student is not in the list!" << endl;
 }
 int main(){
   bool quit = false;
   char command[10];
-  Node* head = NULL;
+  node* head = NULL;
   //introduction
   cout << "Welcome to Linked Lists p2" << endl;
   cout << "ADD- add a student to the list" << endl;
@@ -87,7 +115,7 @@ int main(){
       cin >> GPA;
       cin.get();
       //adds the student to the list
-      Student* tempStudent = new Student(firstName, lastName, ID, GPA);
+      student* tempStudent = new student(firstName, lastName, ID, GPA);
       addNode(tempStudent, head); 
     }else if(strcmp(command, "PRINT")==0){
       //prints out the contents of the list
@@ -105,6 +133,7 @@ int main(){
       //quits the program
       quit = true;
     }else{
+      //INVALID COMMAND
       cout << "INVALID COMMAND" << endl;
     }
   }//while loop

@@ -1,16 +1,24 @@
+/*this is the header for the nodel class
+ *Trevor Horine
+ *12/11/2017
+ */
 #ifndef NODE_H
 #define NODE_H
-#include "Student.h"
-class Node{
+#include <iostream>
+#include <cstring>
+#include "student.h"
+
+using namespace std;
+
+class node{
  public:
-  //methods
-  Node* getNext();
-  Student* getStudent();
-  void setNext(Node*);
-  Node(Student*);
-  ~Node();
+  node();
+  ~noed();
+  void setvalue(student*);
+  student* getvalue();
+  void setnext(node*);
  private:
-  //member variables
-  Student* student;
-  Node* next;
-}
+  student* studentptr;
+  node* next;
+};
+#endif

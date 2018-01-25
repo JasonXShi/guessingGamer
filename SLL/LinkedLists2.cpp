@@ -28,6 +28,15 @@ void addNode(student* tempStudent, node* &current){
 	nextNode->setnext(tempNode);
 	return;
       }
+      //if the student's id is less than the head node
+      if(tempStudent->getID() < current->getvalue()->getID()){
+	node* tempNode = current;
+	current = new node();
+	//add the new node before the current node
+	current->setvalue(tempStudent);
+	current->setnext(tempNode);
+	return;
+      }
     }else{
       //if this is the last node, add it to the end
       current->setnext(new node());

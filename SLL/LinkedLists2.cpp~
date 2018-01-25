@@ -25,6 +25,7 @@ void addNode(student* tempStudent, node* &head){
     while(current->getnext() != NULL){
       current = current->getnext();
     }
+    //add the node to the end of the list
     current->setnext(new node());
     current->getnext()->setvalue(tempStudent);
   }
@@ -32,7 +33,9 @@ void addNode(student* tempStudent, node* &head){
 //loops through the entire list and prints out the contents
 void printList(node* next){
   if(next != NULL){
-    cout << next->getvalue()->getFirstName() << " " << next->getvalue()->getLastName() << ", " << next->getvalue()->getID() << ", " << next->getvalue()->getGPA() << endl;							        printList(next->getnext());
+    cout << next->getvalue()->getFirstName() << " " << next->getvalue()->getLastName() << ", " << next->getvalue()->getID() << ", " << next->getvalue()->getGPA() << endl;
+    //uses recursion to print the list
+    printList(next->getnext());
   }
 }
 //prints out the average by dividing the sum of all gpas by the number of students
@@ -40,6 +43,7 @@ void findAverage(node* current){
   float GPASum = 0;
   float studentCounter = 0;
   while(current != NULL){
+    //adds all the GPA'S together, while keeping track of the number of students
     GPASum = GPASum + current->getvalue()->getGPA();
     studentCounter = studentCounter + 1;
     current = current->getnext();
@@ -48,21 +52,36 @@ void findAverage(node* current){
 }
 void deleteNode(node* &head, int ID){
   node* current = head;
+  node* previous = NULL;
   //loops through the list and deletes the node
   //then adjusts the previous node
   while(current != NULL){
-    if(current->getnext()->getvalue()->getID() == ID){
+    if(current->getvalue()->getID() == ID){
       //DELETE THE STUDENT FOUND
-      cout << "Found the student!" << endl;
-      current->setnext(current->getnext()->getnext());
-      delete(current->getnext()->getvalue());
-      delete(current->getnext());
+      //if this isn't the first node, then set the previous node's next equal to the node after the deleted student
+      if(previous != NULL){
+	previous->setnext(current->getnext());
+	//if this is the first node
+      }else{
+	//if there is a node after this node, set it equal to the next
+	if(head->getnext() != NULL){
+	  head = head->getnext();
+	}else{
+	  //if this is the only node, set it equal to null
+	  head = NULL;
+	}
+      }
+      //delete the student
+      delete(current);
       //SET NEXT EQUAL TO THE NEXT OF THE NEXT
-					     break;
+      return;
     }else{
+      //set previous equal to the current and increment current
+      previous = current;
       current = current->getnext();
     }
   }
+  //if the student was not found
   cout << "Student is not in the list!" << endl;
 }
 int main(){
@@ -114,6 +133,7 @@ int main(){
       //quits the program
       quit = true;
     }else{
+      //INVALID COMMAND
       cout << "INVALID COMMAND" << endl;
     }
   }//while loop

@@ -3,7 +3,7 @@ Kevin Men
 C++
 Linked Lists Part 2
 Allows the user to create a list of students using linkedlists
-1/19/18
+1/25/18
  */
 #include "node.h"
 #include "student.h"
@@ -13,23 +13,38 @@ Allows the user to create a list of students using linkedlists
 
 using namespace std;
 
-//Adds node to the end of the list
-void addNode(student* tempStudent, node* &head){
-  node* current = head;
-  //if this is the first node
-  if(current == NULL){
-    head = new node();
-    head->setvalue(tempStudent);
-  }else{
-    //finds the last node in the list and adds the node to the end
-    while(current->getnext() != NULL){
-      current = current->getnext();
+//Adds nodes in the correct order
+void addNode(student* tempStudent, node* &current){
+  if(current != NULL){
+    node* nextNode = current->getnext();
+    if(current->getnext() != NULL){
+      //if the student's id is in between two others
+      if(current->getvalue()->getID() < tempStudent->getID() && current->getnext()->getvalue()->getID() > tempStudent->getID()){
+	node* tempNode = current->getnext();
+	//adds the node between the two nodes
+	current->setnext(new node());
+	current->getnext()->setvalue(tempStudent);
+	nextNode = current->getnext();
+	nextNode->setnext(tempNode);
+	return;
+      }
+    }else{
+      //if this is the last node, add it to the end
+      current->setnext(new node());
+      current->getnext()->setvalue(tempStudent);
+      return;
     }
-    //add the node to the end of the list
-    current->setnext(new node());
-    current->getnext()->setvalue(tempStudent);
-  }
+    //if this is the first node, set head equal to it
+  }else{
+    current = new node();
+    current->setvalue(tempStudent);
+   return;
+ }
+  //recursively calls add node
+  node* nextNode = current->getnext();
+  addNode(tempStudent, nextNode);
 }
+
 //loops through the entire list and prints out the contents
 void printList(node* next){
   if(next != NULL){

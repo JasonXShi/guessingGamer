@@ -1,0 +1,15 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+int main(){
+  char input[100];
+  cin.getline(input, 100, '\n');
+  char* split;
+  split = strtok(str, " ");
+  while(split != NULL){
+    cout << split << endl;
+    split =  strtok (NULL, " ");
+  }
+}

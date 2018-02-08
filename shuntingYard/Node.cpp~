@@ -1,0 +1,19 @@
+#include "Node.h"
+Node::Node(char* newValue){
+  value = newValue;
+}
+void Node::setRight(Node* rightNode){
+  rightChild = rightNode;
+}
+void Node::setLeft(Node* leftNode){
+  leftChild = leftNode;
+}
+char* getValue(){
+  return value;
+}
+Node* getRight(){
+  return rightChild;
+}
+Node* getLeft(){
+  return leftChild;
+}

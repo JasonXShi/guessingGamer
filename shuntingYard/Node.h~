@@ -7,8 +7,9 @@ class Node {
   Node* getLeft();
   void setRight(Node*);
   void setRight(Node*);
+  void setValue(char*);
   char* getValue();
-  Node*(     );
+  Node();
 
  private:
   Node* rightChild;

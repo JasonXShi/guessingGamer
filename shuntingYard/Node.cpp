@@ -10,12 +10,12 @@ void Node::setLeft(Node* leftNode){
 void Node::setValue(char* newValue){
   value = newValue;
 }
-char* getValue(){
+char* Node::getValue(){
   return value;
 }
-Node* getRight(){
+Node* Node::getRight(){
   return rightChild;
 }
-Node* getLeft(){
+Node* Node::getLeft(){
   return leftChild;
 }

@@ -6,10 +6,10 @@ class Node {
   Node* getRight();
   Node* getLeft();
   void setRight(Node*);
-  void setRight(Node*);
+  void setLeft(Node*);
   void setValue(char*);
   char* getValue();
-  Node*();
+  Node();
 
  private:
   Node* rightChild;

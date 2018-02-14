@@ -25,6 +25,8 @@ void pushNode(char* value, Node* &head){
   if(current == NULL){
     head = new Node();
     head->setValue(value);
+    Node* tempNode = NULL;
+    head->setRight(tempNode);
   }else{
     Node* tempNode = new Node();
     tempNode->setValue(value);
@@ -32,10 +34,25 @@ void pushNode(char* value, Node* &head){
     head = tempNode;
   }
 }
+char* popNode(Node* &head){
+  Node* tempNode = head;
+  if(head->getRight() != NULL){
+    head = head->getRight();
+    return tempNode->getValue();
+  }else{
+    head = NULL;
+    return tempNode->getValue();
+  }
+}
+char* peepNode(Node* head){
+  return head->getValue();
+}
 void printList(Node* &head){
   Node* current = head;
   if(current != NULL){
     cout << current->getValue() << endl;
+  }else{
+    return;
   }
   Node* nextNode = current->getRight();
   printList(nextNode);
@@ -48,9 +65,21 @@ bool isNumber(char* value){
   }
   return true;
 }
-
+void shuntingYard(vector<char*> expression, vector<char*> &output, Node* operatorStack, int[] type, map<char, int> precedence, map<char,int> associativity){
+  int count = 0;
+  for(vector<char*>::iterator it = expression.begin(); it!=expression.end(); ++it){
+    if(type[count] == 0){
+      output.push_back(*it);
+    }else if(type[count] == 2){
+      while(precedence[peepNode(operatorStack)] > precedence[*it]
+    }
+    count++;
+  }
+}
 int main(){
   map<char, int> precedence;
+  precedence['('] = 5;
+  precedence[')'] = 5;
   precedence['^'] = 4;
   precedence['/'] = 3;
   precedence['*'] = 3;
@@ -101,5 +130,7 @@ int main(){
     }
     count++;
   }
-  printList(operatorStack);
+  //printList(operatorStack);
+  cout << popNode(operatorStack);
+  //cout << popNode(operatorStack);
 }

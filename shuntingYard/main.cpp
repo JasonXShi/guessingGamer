@@ -65,16 +65,47 @@ bool isNumber(char* value){
   }
   return true;
 }
+void popLeft(Node* &head){
+  Node* current = head;
+  Node* previous = NULL;
+  while(current != NULL){
+    if(strcmp(current->getValue(), '(') == 0){
+      previous->setRight(current->getRight());
+      return;
+    }else{
+      previous = current;
+      current = current->getRight();
+    }
+  }
+}
+vector<char*> popRest(Node* &head, vector<char*> &output){
+  current = head;
+  while(current != NULL){
+    output.push_back(current->getValue());
+    current = current ->getNext();
+  }
+  head = NULL;
+}
 void shuntingYard(vector<char*> expression, vector<char*> &output, Node* operatorStack, int[] type, map<char, int> precedence, map<char,int> associativity){
   int count = 0;
   for(vector<char*>::iterator it = expression.begin(); it!=expression.end(); ++it){
     if(type[count] == 0){
       output.push_back(*it);
     }else if(type[count] == 2){
-      while(precedence[peepNode(operatorStack)] > precedence[*it]
-    }
+      while((precedence[peepNode(operatorStack)] > precedence[*it] || (precedence[peepNode(operatorStack)] == precedence[*it] ** associativity[*it] == 1) ** strcmp(peepNode(operatorStack), ')') != 0){
+	output.push_back(popNode(operatorStack));
+      }
+    }else if(strcmp(*it, '(') == 0){
+      pushNode(*it);
+    }else if(strcmp(*it, ')') == 0){
+      while(associativity[peepNode(operatorStack)] != 0){
+      output.push_back(popNode(operatorStack);
+      }  			 			 
+      popLeft(operatorStack);
+    }			 
     count++;
   }
+  popRest(operatorStack, output);
 }
 int main(){
   map<char, int> precedence;

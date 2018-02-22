@@ -1,6 +1,13 @@
+//cpp file for node class
 #include "Node.h"
+#include <cstddef>
+//initalizes everything to null
 Node::Node(){
+  rightChild = NULL;
+  leftChild = NULL;
+  value = NULL;
 }
+//getters and setters
 void Node::setRight(Node* rightNode){
   rightChild = rightNode;
 }

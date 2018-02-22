@@ -3,6 +3,7 @@
 #define NODE_H
 class Node {
  public:
+  //getters and setters
   Node* getRight();
   Node* getLeft();
   void setRight(Node*);
@@ -12,8 +13,10 @@ class Node {
   Node();
 
  private:
+  //left and right child variables
   Node* rightChild;
   Node* leftChild;
+  //stores value of the node
   char* value;
 };
 #endif

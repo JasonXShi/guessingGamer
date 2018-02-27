@@ -1,0 +1,52 @@
+#include "Node.h"
+#include <iostream>
+
+using namespace std;
+
+void pushNode(Node* head, char* value){
+  Node* current = head;
+  if(current == NULL){
+    head = newNode();
+    head->setValue(value);
+    Node* tempNode = NULL;
+    head->setRight(tempNode);
+  }else{
+    Node* tempNode = new Node();
+    tempNode->setValue(value);
+    tempNode->setRight(head);
+    head = tempNode;
+  }
+}
+char* popNode(Node* head){
+  Node* tempNode = head;
+  if(head->getRight() != NULL){
+    head = head->getRight();
+    return tempNode->getValue();
+  }else{
+    head = NULL;
+    return tempNode->getValue();
+  }
+}
+int main(){
+  int response;
+  char input[500];
+  Node* head = NULL;
+  cout << "Enter 1 for manual input, and 2 for file input" << endl;
+  cin >> response;
+  cin.get();
+  if(response == 1){
+    cout << "Enter your numbers separated by spaces: " << endl;
+    cin.getline(input, 500, '\n');
+    char* split;
+    split = strtok(intput, " ");
+    while(split != NULL){
+      cout << split << endl;
+      pushNode(head, split);
+      split = strtok(NULL, " ");
+    }
+  }else if(response == 2){
+    //INPUT TEXT INPUT HERE
+  }else{
+    cout << "NOT A VALID RESPONSE" << endl;
+  }
+}

@@ -3,7 +3,7 @@ Kevin Men
 C++ Programming
 Heap
 Constructs a max heap from a user input or file input
- */
+*/
 #include "Node.h"
 #include <iostream>
 #include <cstring>
@@ -11,6 +11,7 @@ Constructs a max heap from a user input or file input
 
 using namespace std;
 
+//NODE FUNCTIONS NOT USED
 void pushNode(Node* head, char* value){
   Node* current = head;
   if(current == NULL){
@@ -34,37 +35,60 @@ char* popNode(Node* head){
     return tempNode->getValue();
   }
 }
-void max_heapify(int (&A)[101], int i, int nodeCount){
-  int l = 2*i;
-  int r = (2*i) + 1;
-  int largest;
-  if(l <= nodeCount && A[l] > A[i]){
+//END OF NODE FUNCTIONS
+void printHeap(int A[100], int n, int start, int nodeCount);
+//satisfied the properties of a max heap
+void max_heapify(int (&A)[100], int i, int nodeCount){
+  int l = (2*i) + 1;
+  int r = (2*i) + 2;
+  int largest = i;
+  if(l < nodeCount && A[l] > A[i]){
     largest = l;
-  }else{
-    largest = i;
   }
-  if(r <= nodeCount && A[r] > A[largest]){
+  if(r < nodeCount && A[r] > A[largest]){
     largest = r;
   }
   if(largest != i){
-    int temp = A[i];
-    A[i] = A[largest];
-    A[largest] = temp;
+    swap(A[i], A[largest]);
     max_heapify(A, largest, nodeCount);
   }
 }
-void build_max_heap(int (&A)[101], int nodeCount){
+//build the heap by editting the original array
+void build_max_heap(int (&A)[100], int nodeCount){
   int heapSize = nodeCount;
-  for(int i = nodeCount/2; i > 0; i--){
+  for(int i = (nodeCount/2) - 1; i >= 0; i--){
     max_heapify(A, i, nodeCount);
   }
+}
+//sorts heap from low to high
+void heapSort(int (&A)[100], int nodeCount){
+  build_max_heap(A, nodeCount);
+  cout << "Printing max heap" << endl;
+  printHeap(A, 1, 0, nodeCount);
+  cout << endl;
+  for(int i = nodeCount - 1; i >= 0; i--){
+    swap(A[0], A[i]);
+    max_heapify(A, 0, i);
+  }
+}
+//uses recursion to print the heap
+void printHeap(int A[100], int n, int start, int nodeCount){
+  for(int i = 0; i < n; i++){
+    if(!(start + i >= nodeCount)){
+      cout << A[start + i] << "  ";
+    }else{
+      return;
+    }
+  }
+  cout << endl;
+  printHeap(A, n + 1, start + n, nodeCount);
 }
 int main(){
   int response;
   char input[500];
   Node* head = NULL;
-  int numbers[101];
-  int nodeCount = 1;
+  int numbers[100];
+  int nodeCount = 0;
   cout << "Enter 1 for manual input, and 2 for file input" << endl;
   cin >> response;
   cin.get();
@@ -85,9 +109,11 @@ int main(){
     cout << "NOT A VALID RESPONSE" << endl;
     return 0;
   }
-  build_max_heap(numbers, nodeCount);
-  for(int i = 1; i < nodeCount; i++){
-    cout << numbers[i] << endl;
+  //cout << nodeCount << endl;
+  heapSort(numbers, nodeCount);
+  cout << "Printing sorted" << endl;
+  for(int i = nodeCount - 1; i >= 0; i--){
+    cout << numbers[i] << " ";
   }
-  
+  cout << endl;
 }

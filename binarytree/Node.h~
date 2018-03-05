@@ -1,0 +1,20 @@
+#ifndef NODE_H
+#define NODE_H
+
+class Node{
+ public:
+  Node();
+  Node* getRight();
+  Node* getLeft();
+  Node* getParent();
+  char* getValue();
+  void setValue(char*);
+  void setLeft(Node*);
+  void setRight(Node*);
+ private:
+  Node* leftChild;
+  Node* rightChild;
+  Node* parent;
+  char* value;
+};
+#endif

@@ -1,0 +1,36 @@
+#include "Node.h"
+#include <cstddef>
+
+Node::Node(){
+  leftChild = NULL;
+  rightChild = NULL;
+  parent = NULL;
+  value = NULL;
+}
+Node::~Node(){
+  leftChild = NULL;
+  rightChild = NULL;
+  parent = NULL;
+  delete value;
+}
+Node* Node::getRight(){
+  return rightChild;
+}
+Node* Node::getLeft(){
+  return leftChild;
+}
+Node* Node::getParent(){
+  return parent;
+}
+void Node::setValue(char* newValue){
+  value = newValue;
+}
+void Node::setRight(Node* newRight){
+  rightChild = newRight;
+}
+void Node::setLeft(Node* newLeft){
+  leftChild = newLeft;
+}
+void Node::setParent(Node* newParent){
+  parent = newParent;
+}

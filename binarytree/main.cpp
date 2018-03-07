@@ -1,3 +1,9 @@
+/*
+Kevin Men
+C++ Programming
+Binary Search Tree - Allows the user to create a binary search tree, then delete elements
+3/7/18
+ */
 #include "Node.h"
 #include <iostream>
 #include <cstdlib>
@@ -7,6 +13,10 @@
 using namespace std;
 
 void addNode(Node* &head, int value){
+  if(head == NULL){
+    head->setValue(value);
+    return;
+  }
   if(value > head->getValue()){
     if(head->getRight() != NULL){
       Node* next = head->getRight();
@@ -30,8 +40,36 @@ void addNode(Node* &head, int value){
     
   }
 }
-Node* deleteNode(Node* head, int value){
-  return head;
+Node* minNode(Node* head){
+  Node* current = head;
+  while(current->getLeft() != NULL){
+    current = current->getLeft();
+  }
+  return current;
+}
+Node* deleteNode(Node* root, int value){
+  if(root == NULL){
+    return root;
+  }
+  if(value < root->getValue()){
+    root->setLeft(deleteNode(root->getLeft(), value));
+  }else if(value > root->getValue()){
+    root->setRight(deleteNode(root->getRight(), value));
+  }else{
+    if(root->getLeft() == NULL){
+      Node* temp = root->getRight();
+      free(root);
+      return temp;
+    }else if(root->getRight() == NULL){
+      Node* temp = root->getLeft();
+      free(root);
+      return temp;
+    }
+    Node* temp = minNode(root->getRight());
+    root->setValue(temp->getValue());
+    root->setRight(deleteNode(root->getRight(), temp->getValue()));
+  }
+  return root;
 }
 
 int main(){

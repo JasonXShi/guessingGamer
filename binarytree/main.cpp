@@ -2,7 +2,7 @@
 Kevin Men
 C++ Programming
 Binary Search Tree - Allows the user to create a binary search tree, then delete elements
-3/7/18
+3/15/18
  */
 #include "Node.h"
 #include <iostream>
@@ -59,6 +59,7 @@ Node* minNode(Node* head){
   }
   return current;
 }
+//Deletion help from stack overflow
 //deletes a node
 Node* deleteNode(Node* root, int value){
   if(root == NULL){
@@ -84,10 +85,6 @@ Node* deleteNode(Node* root, int value){
   }
   return root;
 }
-//prints out the tree
-void printTree(Node* head){
-  
-}
 //prints inorder of the tree
 void inorder(Node* head){
   if(head != NULL){
@@ -97,17 +94,33 @@ void inorder(Node* head){
     inorder(head->getRight());
   }
 }
+//printing algorithm from stack overflow
+//prints the tree
+/*PRINT EXPLAINATION:
+the first line indicated the root
+the number of indents shows the depth of the node
+all children are shown below the parent
+ex:
+10
+  5
+  15
+in this case 10 is the parent, 5 is left child, and 15 is right child
+note that if there is only 1 child, the left/right is determined by whether it is larger than the parent
+ */
 void postOrder(Node* p, int indent = 0){
   if(p != NULL){
+    if(indent){
+      cout << std::setw(indent) << ' ';
+    }
     cout << p->getValue() << "\n ";
+    //uses recursion to print the tree
     if(p->getLeft()){
+      //print left subtree
       postOrder(p->getLeft(), indent + 4);
     }
     if(p->getRight()){
+      //print right subtree
       postOrder(p->getRight(), indent + 4);
-    }
-    if(indent){
-      cout << std::setw(indent) << ' ';
     }
   }
 }
@@ -115,6 +128,7 @@ int main(){
   Node* head = NULL;
   int response;
   int value;
+  int newValue;
   char* action;
   char input[500];
   int numbers[100];
@@ -160,6 +174,7 @@ int main(){
   inorder(head);
   cout << endl;
   while(true){
+    cout << "Enter INSERT to insert a node" << endl;
     cout << "Enter DELETE to delete a node" << endl;
     cout << "Enter PRINT to display the tree" << endl;
     cout << "ENTER QUIT to exit" << endl;
@@ -170,6 +185,7 @@ int main(){
       cin >> value;
       cin.get();
       deleteNode(head, value);
+      nodeCount--;
       cout << "Inorder traversal: ";
       inorder(head);
       cout << endl;
@@ -179,6 +195,13 @@ int main(){
     }else if(strcmp(action, "QUIT") == 0){
       //QUIT THE PROGRAM
       break;
+    }else if(strcmp(action, "INSERT") == 0){
+      //INSERT A NODE INTO THE TREE
+      cout << "Enter the value of the node you wish to insert" << endl;
+      cin >> newValue;
+      cin.get();
+      addNode(head, newValue);
+      nodeCount++;
     }else{
       //if they enter something else
       cout << "INVALID RESPONSE" << endl;

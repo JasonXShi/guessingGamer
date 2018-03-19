@@ -1,0 +1,15 @@
+/*
+Kevin Men
+Red Black Tree- Allows the user to create a red black tree
+C++ Programming
+3/19
+ */
+#include "node.h"
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+int main(){
+  cout << "Welcome to red black binary tree" << endl;
+}

@@ -13,12 +13,19 @@ C++ Programming
 
 using namespace std;
 
+void insert(node* &root, int value);
+void print(node* root);
+
 int main(){
   int inputType;
+  int nodeCount;
   char* fileName;
   ifstream inFile;
   char* fileInput;
   char* input;
+  node* root = NULL;
+  int value;
+  cout << "\033[1;31mbold red text\033[0m\n";
   cout << "Welcome to red black binary tree" << endl;
   cout << "Type 1 for manual input and 2 for file input" << endl;
   cin >> inputType;
@@ -34,6 +41,13 @@ int main(){
     }
     inFile.getline(fileInput, 500, '\n');
     //ADD NUMBERS TO TREE
+    char* split;
+    split = strtok(fileInput, " ");
+    while(split != NULL){
+      insert(root, atoi(split));
+      nodeCount++;
+      split = strtok(NULL, " ");
+    }
   }
   while(true){
     cout << "Type ADD to insert a node" << endl;
@@ -41,13 +55,63 @@ int main(){
     cin.getline(input, 10, '\n');
     if(strcmp(input, "ADD") == 0){
       //ADD NODE
+      cout << "Enter a number to add into the tree" << endl;
+      cin >> value;
+      cin.get();
+      insert(root, value);
+      nodeCount++;
     }else if(strcmp(input, "PRINT") == 0){
       //PRINT TREE
+      //print(root);
     }else if(strcmp(input, "QUIT") == 0){
       //QUITS PROGRAMS
       return 0;
     }else{
       cout << "NOT A VALID RESPONSE" << endl;
+    }
+  }
+}
+//inserts a node into the tree
+void insert(node* &root, int value){
+  if(root == NULL){
+    root = new node();
+    root->setValue(value);
+    return;
+  }
+  if(value > root->getValue()){
+    if(root->getRight() != NULL){
+      node* next = root->getRight();
+      insert(next, value);
+    }else{
+      node* tempNode = new node();
+      tempNode->setValue(value);
+      root->setRight(tempNode);
+      return;
+    }
+  }else{
+    if(root->getLeft() != NULL){
+      node* next = root->getLeft();
+      insert(next, value);
+    }else{
+      node* tempNode = new node();
+      tempNode->setValue(value);
+      root->setLeft(tempNode);
+      return;
+    }
+  }
+}
+//prints out the tree
+void print(node* p, int indent = 0){
+  if(p != NULL){
+    if(indent){
+      cout << std::setw(indent) << ' ';
+    }
+    cout << p->getValue() << "\n";
+    if(p->getLeft()){
+      print(p->getLeft(), indent + 4);
+    }
+    if(p->getRight()){
+      print(p->getRight(), indent + 4);
     }
   }
 }

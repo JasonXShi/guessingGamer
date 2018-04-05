@@ -14,6 +14,7 @@ C++ Programming
 using namespace std;
 
 void insert(node* &root, int value);
+void assignColor(node* &n);
 void print(node* root);
 
 int main(){
@@ -75,6 +76,7 @@ int main(){
 void insert(node* &root, int value){
   if(root == NULL){
     root = new node();
+    root->setColor(0);
     root->setValue(value);
     return;
   }
@@ -84,6 +86,7 @@ void insert(node* &root, int value){
       insert(next, value);
     }else{
       node* tempNode = new node();
+      assignColor(tempNode);
       tempNode->setValue(value);
       root->setRight(tempNode);
       return;
@@ -94,10 +97,25 @@ void insert(node* &root, int value){
       insert(next, value);
     }else{
       node* tempNode = new node();
+      assignColor(tempNode);
       tempNode->setValue(value);
       root->setLeft(tempNode);
       return;
     }
+  }
+}
+//assigns the correct color to a node
+void assignColor(node* &n){
+  n->setColor(1);
+  //if the parent is black, 
+  if(n->getParent()->getColor() == 0){
+    return;
+  }
+  if(n->getParent()->getColor() == 1 && n->getUncle()->getColor() == 1){
+    n->getParent()->setColor(0);
+    n->getUncle()->setColor(0);
+    n->getGrandparent()->setColor(1);
+    assignColor(Grandparent);
   }
 }
 //prints out the tree

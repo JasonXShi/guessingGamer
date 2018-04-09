@@ -184,7 +184,7 @@ int main(){
       cout << "Enter the value of the node you wish to delete" << endl;
       cin >> value;
       cin.get();
-      deleteNode(head, value);
+      head = deleteNode(head, value);
       nodeCount--;
       cout << "Inorder traversal: ";
       inorder(head);

@@ -107,20 +107,28 @@ ex:
 in this case 10 is the parent, 5 is left child, and 15 is right child
 note that if there is only 1 child, the left/right is determined by whether it is larger than the parent
  */
-void postOrder(Node* p, int indent = 0){
+void postOrder(Node* p, Node* n, int indent = 0){
   if(p != NULL){
     if(indent){
       cout << std::setw(indent) << ' ';
     }
-    cout << p->getValue() << "\n ";
+    if(n != NULL){
+      if(p->getValue() > n->getValue()){
+	cout << p->getValue() << "R" << "\n";
+      }else{
+	cout << p->getValue() << "L" << "\n";
+      }
+    }else{
+      cout << p->getValue() << " " << "\n ";
+    }
     //uses recursion to print the tree
     if(p->getLeft()){
       //print left subtree
-      postOrder(p->getLeft(), indent + 4);
+      postOrder(p->getLeft(), p, indent + 4);
     }
     if(p->getRight()){
       //print right subtree
-      postOrder(p->getRight(), indent + 4);
+      postOrder(p->getRight(), p, indent + 4);
     }
   }
 }
@@ -191,7 +199,8 @@ int main(){
       cout << endl;
     }else if(strcmp(action, "PRINT") == 0){
       //PRINT THE TREE
-      postOrder(head);
+      Node* parent = NULL;
+      postOrder(head, parent);
     }else if(strcmp(action, "QUIT") == 0){
       //QUIT THE PROGRAM
       break;

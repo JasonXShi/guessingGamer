@@ -16,6 +16,7 @@ using namespace std;
 void insert(node* &root, int value);
 void assignColor(node* &n);
 void print(node* root);
+void rotate(node* &current);
 
 int main(){
   int inputType;
@@ -115,8 +116,34 @@ void assignColor(node* &n){
     n->getParent()->setColor(0);
     n->getUncle()->setColor(0);
     n->getGrandparent()->setColor(1);
-    assignColor(Grandparent);
+    node* gp = n->getGrandparent();
+    assignColor(gp);
   }
+}
+//if uncle is black case
+void rotate(node* &current){
+  //if the uncle is black and the parent and node are both red
+  if(current->uncle()->getColor() == 0 && current->getParent()->getColor() == 1 && current->getColor() == 1){
+    node* grand = current->getParent()->getParent();
+    node* greatg = grand->getParent();
+    node* uncle = current->getParent()->getSibling();
+    node* parent = current->getParent();
+    node* temp = current;
+    //left-left case
+    if(current->getValue() <= current->getParent()->getValue() && current->getParent()->getValue() <= current->getParent()->getParent()->getValue()){
+      
+    //left-right case
+    }else if(current->getValue() > current->getParent()->getValue() && current->getParent()->getValue() <= current->getParent()->getParent()->getValue()){
+
+    //right-right case
+    }else if(current->getValue() > current->getParent()->getValue() && current->getParent()->getValue() > current->getParent()->getParent()->getValue()){
+
+    //right-left case
+    }else if(current->getValue() <= current->getParent()->getValue() && current->getParent()->getValue() > current->getParent()->getParent()->getValue()){
+
+    }
+  }
+  return;
 }
 //prints out the tree
 void print(node* p, int indent = 0){

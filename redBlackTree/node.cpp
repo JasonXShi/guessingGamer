@@ -8,8 +8,6 @@ node::node(){
   rightChild = NULL;
   sibling = NULL;
   parent = NULL;
-  grandparent = NULL;
-  uncle = NULL;
   color;
   value;
 }
@@ -19,8 +17,6 @@ node::~node(){
   rightChild = NULL;
   sibling = NULL;
   parent = NULL;
-  grandparent = NULL;
-  uncle = NULL;
 }
 //getters
 node* node::getRight(){
@@ -34,12 +30,6 @@ node* node::getSibling(){
 }
 node* node::getParent(){
   return parent;
-}
-node* node::getGrandparent(){
-  return grandparent;
-}
-node* node::getUncle(){
-  return uncle;
 }
 int node::getColor(){
   return color;
@@ -59,12 +49,6 @@ void node::setSibling(node* newSibling){
 }
 void node::setParent(node* newParent){
   parent = newParent;
-}
-void node::setGrandparent(node* newGrand){
-  grandparent = newGrand;
-}
-void node::setUncle(node* newUncle){
-  uncle = newUncle;
 }
 void node::setColor(int newColor){
   color = newColor;

@@ -10,8 +10,8 @@ node::node(){
   parent = NULL;
   grandparent = NULL;
   uncle = NULL;
-  color = NULL;
-  value = NULL;
+  color;
+  value;
 }
 //destructor
 node::~node(){
@@ -39,7 +39,7 @@ node* node::getGrandparent(){
   return grandparent;
 }
 node* node::getUncle(){
-  return uncle();
+  return uncle;
 }
 int node::getColor(){
   return color;

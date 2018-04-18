@@ -17,6 +17,7 @@ void insert(node* &root, int value);
 void assignColor(node* &n);
 void print(node* root);
 void rotate(node* &current);
+node* sibling(node* &n);
 
 int main(){
   int inputType;
@@ -112,18 +113,18 @@ void assignColor(node* &n){
   if(n->getParent()->getColor() == 0){
     return;
   }
-  if(n->getParent()->getColor() == 1 && n->getUncle()->getColor() == 1){
+  if(n->getParent()->getColor() == 1 && n->getParent()->getSibling()->getColor() == 1){
     n->getParent()->setColor(0);
-    n->getUncle()->setColor(0);
-    n->getGrandparent()->setColor(1);
-    node* gp = n->getGrandparent();
+    n->getParent()->getSibling()->setColor(0);
+    n->getParent()->getParent()->setColor(1);
+    node* gp = n->getParent()->getParent();
     assignColor(gp);
   }
 }
 //if uncle is black case
 void rotate(node* &current){
   //if the uncle is black and the parent and node are both red
-  if(current->uncle()->getColor() == 0 && current->getParent()->getColor() == 1 && current->getColor() == 1){
+  if(current->getParent()->getSibling()->getColor() == 0 && current->getParent()->getColor() == 1 && current->getColor() == 1){
     node* grand = current->getParent()->getParent();
     node* greatg = grand->getParent();
     node* uncle = current->getParent()->getSibling();
@@ -131,7 +132,31 @@ void rotate(node* &current){
     node* temp = current;
     //left-left case
     if(current->getValue() <= current->getParent()->getValue() && current->getParent()->getValue() <= current->getParent()->getParent()->getValue()){
-      
+      //if grandparent isn't root
+      if(greatg != NULL){
+	if(parent->getValue() > greatg->getValue()){
+	  greatg->setRight(parent);
+	}else{
+	  greatg->setLeft(parent);
+	}
+	sibling(parent);
+      }else{
+	parent->setSibling(NULL);
+      }
+      //adjust current
+      current->setSibling(grand);
+      //adjust parent
+      parent->setColor(0);
+      parent->setLeft(current);
+      parent->setRight(grand);
+      //adjust uncle
+      uncle->setParent(grand);
+      sibling(uncle);
+      //adjust granparent
+      grand->setRight(NULL);
+      grand->setParent(parent);
+      sibling(grand);
+      grand->setColor(1);
     //left-right case
     }else if(current->getValue() > current->getParent()->getValue() && current->getParent()->getValue() <= current->getParent()->getParent()->getValue()){
 
@@ -158,5 +183,15 @@ void print(node* p, int indent = 0){
     if(p->getRight()){
       print(p->getRight(), indent + 4);
     }
+  }
+}
+//returns the sibling of a node
+node* sibling(node* &n){
+  //n is a right child
+  if(n->getValue() > n->getParent()->getValue()){
+    n->setSibling(n->getParent()->getLeft());
+  //n is a left child
+  }else{
+    n->setSibling(n->getParent()->getRight());
   }
 }

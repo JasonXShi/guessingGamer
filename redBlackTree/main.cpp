@@ -17,6 +17,8 @@ void insert(node* &root, int value);
 void assignColor(node* &n);
 void print(node* root);
 void rotate(node* &current);
+void rotateRight(node* &current);
+void rotateLeft(node* &current);
 node* sibling(node* &n);
 
 int main(){
@@ -169,6 +171,49 @@ void rotate(node* &current){
     }
   }
   return;
+}
+//performs a right rotation (L-L case)
+void rotateRight(node* &current){
+  node* x = current;
+  node* p = current->getParent();
+  node* g = p->getParent();
+  node* u = p->getSibling();
+  //adjust current
+  x->setSibling(g);
+  //adjust parent
+  p->setColor(0);
+  p->setLeft(x);
+  p->setRight(g);
+  //adjust uncle
+  sibling(u);
+  //adjust grandparent
+  g->setRight(u);
+  g->setParent(p);
+  sibling(grand);
+  grand->setColor(1);
+  return x;
+}
+//performs a left rotation (R-R case)
+void rotateLeft(node* &current){
+  node* x = current;
+  node* p = current->getParent();
+  node* g = p->getParent();
+  node* u = p->getSibling();
+  //adjust current
+  x->setSibling(g);
+  //adjust parent
+  p->setColor(0);
+  p->setParent(g->getParent());
+  sibling(p);
+  p->setLeft(g);
+  p->setRight(x);
+  //adjust uncle
+  sibling(u);
+  //adjust granparent
+  g->setLeft(u);
+  g->setParent(p);
+  g->setSibling(x);
+  g->setColor(1);
 }
 //prints out the tree
 void print(node* p, int indent = 0){

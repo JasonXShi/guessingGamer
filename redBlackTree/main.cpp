@@ -127,38 +127,8 @@ void assignColor(node* &n){
 void rotate(node* &current){
   //if the uncle is black and the parent and node are both red
   if(current->getParent()->getSibling()->getColor() == 0 && current->getParent()->getColor() == 1 && current->getColor() == 1){
-    node* grand = current->getParent()->getParent();
-    node* greatg = grand->getParent();
-    node* uncle = current->getParent()->getSibling();
-    node* parent = current->getParent();
-    node* temp = current;
-    //left-left case
+    //left left case
     if(current->getValue() <= current->getParent()->getValue() && current->getParent()->getValue() <= current->getParent()->getParent()->getValue()){
-      //if grandparent isn't root
-      if(greatg != NULL){
-	if(parent->getValue() > greatg->getValue()){
-	  greatg->setRight(parent);
-	}else{
-	  greatg->setLeft(parent);
-	}
-	sibling(parent);
-      }else{
-	parent->setSibling(NULL);
-      }
-      //adjust current
-      current->setSibling(grand);
-      //adjust parent
-      parent->setColor(0);
-      parent->setLeft(current);
-      parent->setRight(grand);
-      //adjust uncle
-      uncle->setParent(grand);
-      sibling(uncle);
-      //adjust granparent
-      grand->setRight(NULL);
-      grand->setParent(parent);
-      sibling(grand);
-      grand->setColor(1);
     //left-right case
     }else if(current->getValue() > current->getParent()->getValue() && current->getParent()->getValue() <= current->getParent()->getParent()->getValue()){
 
@@ -177,7 +147,13 @@ void rotateRight(node* &current){
   node* x = current;
   node* p = current->getParent();
   node* g = p->getParent();
+  node* gg = g->getParent();
   node* u = p->getSibling();
+  node* t1 = x->getLeft();
+  node* t2 = x->getRight();
+  node* t3 = p->getLeft();
+  node* t4 = u->getLeft();
+  node* t5 = u->getRight();
   //adjust current
   x->setSibling(g);
   //adjust parent
@@ -200,13 +176,14 @@ void rotateLeft(node* &current){
   node* g = p->getParent();
   node* u = p->getSibling();
   //adjust current
+  x->setColor(1);
+  x->setLeft(t1);
+  t->setRight(t2);
+  t->setParent(p);
   x->setSibling(g);
   //adjust parent
   p->setColor(0);
-  p->setParent(g->getParent());
-  sibling(p);
-  p->setLeft(g);
-  p->setRight(x);
+  
   //adjust uncle
   sibling(u);
   //adjust granparent

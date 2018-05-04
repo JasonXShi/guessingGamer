@@ -21,6 +21,8 @@ void rotateRight(node* &current);
 void rotateLeft(node* &current);
 node* sibling(node* &n);
 
+//test data:
+//1 2 13 24 25 26 27 14 15 17 16
 int main(){
   int inputType;
   int nodeCount;
@@ -148,6 +150,7 @@ void rotateRight(node* &current){
   node* p = current->getParent();
   node* g = p->getParent();
   node* gg = g->getParent();
+  node* gs = g->getSibling();
   node* u = p->getSibling();
   node* t1 = x->getLeft();
   node* t2 = x->getRight();
@@ -155,18 +158,42 @@ void rotateRight(node* &current){
   node* t4 = u->getLeft();
   node* t5 = u->getRight();
   //adjust current
+  x->setColor(1);
   x->setSibling(g);
+  x->setLeft(t1);
+  x->setRight(t2);
+  x->setParent(p);
   //adjust parent
   p->setColor(0);
+  p->setSibling(gs);
   p->setLeft(x);
   p->setRight(g);
+  p->setParent(gg);
   //adjust uncle
-  sibling(u);
+  u->setColor(0);
+  u->setSibling(t3);
+  u->setLeft(t4);
+  u->setRight(t5);
+  u->setParent(g);
   //adjust grandparent
+  g->setColor(1);
+  g->setSibling(x);
+  g->setLeft(t3);
   g->setRight(u);
   g->setParent(p);
-  sibling(grand);
-  grand->setColor(1);
+  //adjust subtrees
+  //t1,t2,t3,t4 stay the same
+  //t3
+  if(t3 != NULL){
+    t3->setPaent(g);
+    t3->setSibling(u);
+  }
+  //adjust grandparents
+  if(gg != NULL){
+    child(p, gg);
+  }else{
+    //adjust root node
+  }
   return x;
 }
 //performs a left rotation (R-R case)
@@ -174,23 +201,50 @@ void rotateLeft(node* &current){
   node* x = current;
   node* p = current->getParent();
   node* g = p->getParent();
+  node* gg = g->getParent();
+  node* gs = g->getSibling();
   node* u = p->getSibling();
+  node* t1 = u->getLeft();
+  node* t2 = u->getRight();
+  node* t3 = p->getLeft();
+  node* t4 = x->getLeft();
+  node* t5 = x->getRight();
   //adjust current
   x->setColor(1);
-  x->setLeft(t1);
-  t->setRight(t2);
-  t->setParent(p);
   x->setSibling(g);
+  x->setLeft(t4);
+  x->setRight(t5);
+  x->setParent(p);
   //adjust parent
   p->setColor(0);
-  
+  p->setSibling(gs);
+  p->setLeft(g);
+  p->setRight(x);
+  p->setParent(gg);
   //adjust uncle
-  sibling(u);
-  //adjust granparent
-  g->setLeft(u);
-  g->setParent(p);
-  g->setSibling(x);
+  u->setColor(0);
+  u->setSibling(t3);
+  u->setLeft(t1);
+  u->setRight(t2);
+  u->setParent(g);
+  //adjust grandparent
   g->setColor(1);
+  g->setSibling(x);
+  g->setLeft(u);
+  g->setRight(t3);
+  g->setParent(p);
+  //adjusts subtrees
+  //t1,t2,t4,t5 stay the same
+  if(t3 != NULL){
+    t3->setParent(g);
+    t3->setSibling(u);
+  }
+  //adjust great grand parent
+  if(gg != NULL){
+    child(p, gg);
+  }else{
+    //adjust root node
+  }
 }
 //prints out the tree
 void print(node* p, int indent = 0){
@@ -198,13 +252,23 @@ void print(node* p, int indent = 0){
     if(indent){
       cout << std::setw(indent) << ' ';
     }
-    cout << p->getValue() << "\n";
+    cout << "\033[1;31mbold" << p->getValue() << "\033[0m\n";
     if(p->getLeft()){
       print(p->getLeft(), indent + 4);
     }
     if(p->getRight()){
       print(p->getRight(), indent + 4);
     }
+  }
+}
+//assigns the child based on whether its greater than or less than the parent
+void child(node* &c, node* &p){
+  if(c->getValue() > p->getValue()){
+    p->setRight(c);
+    c->setSibling(p->getLeft());
+  }else{
+    p->setLeft(c);
+    c->setSibling(p->getRight());
   }
 }
 //returns the sibling of a node

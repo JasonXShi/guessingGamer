@@ -25,46 +25,21 @@ void rightLeft(node* &current, node* &root);
 void leftRight(node* &current, node* &root);
 bool blackUncle(node* n);
 bool redUncle(node* n);
+void read(node* &root);
+void search(int n, node* root, bool &found);
 
-//test data:
-//1 2 13 24 25 26 27 14 15 17 16
 int main(){
   int inputType;
-  int nodeCount;
-  char* fileName;
-  ifstream inFile;
-  char* fileInput;
   char* input;
   node* root = NULL;
   int value;
-  cout << "\033[1;31mbold red text\033[0m\n";
-  cout << "Welcome to red black binary tree" << endl;
-  cout << "Type 1 for manual input and 2 for file input" << endl;
-  cin >> inputType;
-  cin.get();
-  if(inputType ==  2){
-    //FILE INPUT
-    cout << "Enter the name of the file" << endl;
-    cin.getline(fileName, 20, '\n');
-    inFile.open(fileName);
-    if(!inFile){
-      cout << "FILE DOES NOT EXIST" << endl;
-      return 0;
-    }
-    inFile.getline(fileInput, 500, '\n');
-    //ADD NUMBERS TO TREE
-    char* split;
-    split = strtok(fileInput, " ");
-    while(split != NULL){
-      insert(root, atoi(split), root);
-      nodeCount++;
-      split = strtok(NULL, " ");
-    }
-  }
+  cout << "Welcome to red black tree" << endl;
   while(true){
     cout << "Type ADD to insert a node" << endl;
     cout << "Type PRINT to print the tree" << endl;
     cout << "Type QUIT to exit the program" << endl;
+    cout << "Type READ to read numbers from a file" << endl;
+    cout << "Type SEARCH to search for a number in the tree" << endl;
     cin.getline(input, 10, '\n');
     if(strcmp(input, "ADD") == 0){
       //ADD NODE
@@ -72,9 +47,6 @@ int main(){
       cin >> value;
       cin.get();
       root = insert(root, value, root);
-      //cout << "post insert" << endl;
-      
-      nodeCount++;
     }else if(strcmp(input, "PRINT") == 0){
       //PRINT TREE
       print(root);
@@ -82,6 +54,43 @@ int main(){
     }else if(strcmp(input, "QUIT") == 0){
       //QUITS PROGRAMS
       return 0;
+    }else if(strcmp(input, "SEARCH") == 0){
+      //checks to see if a node is in the list
+      cout << "Enter a number to search for" << endl;
+      int value;
+      cin >> value;
+      cin.get();
+      bool found = false;
+      search(value, root, found);
+      if(found){
+	cout << "Node found!" << endl;
+      }else{
+	cout << "Node not found!" << endl;
+      }
+    }else if(strcmp(input, "READ") == 0){
+      //read from a file input
+      read(root);
+      cout << "File read" << endl;
+      char* fileName;
+      ifstream inFile;
+      char* fileInput;
+      int nodeCount;
+      cout << "Enter the name of the file" << endl;
+      cin.getline(fileName, 20, '\n');
+      inFile.open(fileName);
+      if(!inFile){
+	cout << "FILE DOES NOT EXIST" << endl;
+	return 0;
+      }
+      inFile.getline(fileInput, 500, '\n');
+      //ADD NUMBERS TO TREE
+      char* split;
+      split = strtok(fileInput, " ");
+      while(split != NULL){
+	insert(root, atoi(split), root);
+	nodeCount++;
+	split = strtok(NULL, " ");
+      }
     }else{
       cout << "NOT A VALID RESPONSE" << endl;
     }
@@ -443,4 +452,27 @@ void sibling(node* &n){
   }else{
     n->setSibling(n->getParent()->getRight());
   }
+}
+//checks to see if a number is in the tree
+void search(int n, node* root, bool &found){
+  if(root == NULL){
+    found = false;
+    return;
+  }
+  if(n > root->getValue()){
+    node* right = root->getRight();
+    search(n, right, found);
+  }
+  if(n < root->getValue()){
+    node* left = root->getLeft();
+    search(n, left, found);
+  }
+  if(n == root->getValue()){
+    cout << "Found the value " << root->getValue() << endl;
+    found = true;
+    return;
+  }
+}
+void read(node* &root){
+  
 }

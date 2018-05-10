@@ -33,6 +33,7 @@ int main(){
   char* input;
   node* root = NULL;
   int value;
+  cout << "Welcome to red black tree" << endl;
   while(true){
     cout << "Type ADD to insert a node" << endl;
     cout << "Type PRINT to print the tree" << endl;
@@ -67,7 +68,29 @@ int main(){
 	cout << "Node not found!" << endl;
       }
     }else if(strcmp(input, "READ") == 0){
+      //read from a file input
       read(root);
+      cout << "File read" << endl;
+      char* fileName;
+      ifstream inFile;
+      char* fileInput;
+      int nodeCount;
+      cout << "Enter the name of the file" << endl;
+      cin.getline(fileName, 20, '\n');
+      inFile.open(fileName);
+      if(!inFile){
+	cout << "FILE DOES NOT EXIST" << endl;
+	return 0;
+      }
+      inFile.getline(fileInput, 500, '\n');
+      //ADD NUMBERS TO TREE
+      char* split;
+      split = strtok(fileInput, " ");
+      while(split != NULL){
+	insert(root, atoi(split), root);
+	nodeCount++;
+	split = strtok(NULL, " ");
+      }
     }else{
       cout << "NOT A VALID RESPONSE" << endl;
     }
@@ -451,26 +474,5 @@ void search(int n, node* root, bool &found){
   }
 }
 void read(node* &root){
-  cout << "File read" << endl;
-  char* fileName;
-  ifstream inFile;
-  char* fileInput;
-  int nodeCount;
-  //FILE INPUT
-  cout << "Enter the name of the file" << endl;
-  cin.getline(fileName, 20, '\n');
-  inFile.open(fileName);
-  if(!inFile){
-    cout << "FILE DOES NOT EXIST" << endl;
-    return;
-  }
-  inFile.getline(fileInput, 500, '\n');
-  //ADD NUMBERS TO TREE
-  char* split;
-  split = strtok(fileInput, " ");
-  while(split != NULL){
-    insert(root, atoi(split), root);
-    nodeCount++;
-    split = strtok(NULL, " ");
-  }
+  
 }

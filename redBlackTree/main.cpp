@@ -512,14 +512,7 @@ node* deletion(node* v, node* root){
   }
   bool blacku;
   //simple cases
-  if(u == NULL){
-    blacku = true;
-  }else if(u->getColor() == 0){
-    blacku = true;
-  }else{
-    //u must be read
-    blacku = false;
-  }
+  blacku = blackUncle(u);
   if(v->getColor() == 1 || blacku == false){
     //simple case (one of them is red)
     node* p = v->getParent();
@@ -544,27 +537,131 @@ node* deletion(node* v, node* root){
     u->setSibling(s);
     child(u, p);
     s->setSibling(u);
-    /*while(u->getColor() == 2 && u != root){
-      
-    }*/
-    node* rr = s->getRight(); //right child of sibling
-    node* lr = s->getLeft(); //left child of sibling
-    //3.2 case a (sibling is black and has at least 1 red child)
-    if(s->getColor() == 0 && r != NULL){
-      if(p->getLeft() == s && lr->getColor() == 1){
-	//left lef case
-      }else if(p->getLeft() == s && rr->getColor() == 1){
-	//left right case
-      }else if(p->getRight() == s && rr->getColor() == 1){
-	//right right case
-      }else if(p->getRight() == s && lr->getColor() == 1){
-	//right left case
+    while(u->getColor() == 2 && u != root){
+      node* rr = s->getRight(); //right child of sibling
+      node* lr = s->getLeft(); //left child of sibling
+      //3.2 case a (sibling is black and has at least 1 red child)
+      if(s->getColor() == 0 && r != NULL){
+	if(p->getLeft() == s && lr->getColor() == 1){
+	  //left left case
+	}else if(p->getLeft() == s && rr->getColor() == 1){
+	  //left right case
+	}else if(p->getRight() == s && rr->getColor() == 1){
+	  //right right case
+	}else if(p->getRight() == s && lr->getColor() == 1){
+	  //right left case
+	}
+      }
+      //3.2 case b (sibling is black and has 2 black children)
+      if(s->getColor() == 0 && blackUncle(rr) == true && blackUncle(lr) == true){
+	s->setColor(1);
+	//delete u and replace it with NULL
+	if(u == NULL){
+	  if(p->getLeft() == u){
+	    p->setLeft(NULL);
+	    delete(u);
+	  }else{
+	    p->setRight(NULL);
+	    delete(u);
+	  }
+	}else{
+	  u->setColor(0);
+	}
+	//if parent is black, turn it to double black
+	if(parent->getColor() == 0){
+	  p->setColor(2);
+	  u = p;
+	  p = u->getParent();
+	  s = u->getSibling();
+	}
+      }
+      //case 3.2 c (sibling is red)
+      if(s->getColor() == 1){
+	if(s == p->getLeft()){
+	  //left case
+	}else{
+	  //right case
+	}
       }
     }
-    //3.2 case b (sibling is black and has 2 black children)
-    if(s->getColor() == 0 && blackUncle(rr) == true && blackUncle(lr) == true){
-      
-    }
   }
+  //if u is the root
+  if(u == root){
+    delete(v);
+    root = u;
+  }
+  return root;
 }
-
+node* 32cRightCase(node* u){
+  node* p = u->getParent();
+  node* s = u->getSibling();
+  node* t1 = s->getLeft();
+  node* t2 = s->getRight();
+  node* g = p->getParent();
+  node* ps = p->getSibling(); 
+  //adjust u
+  u->setParent(p);
+  u->setSibling(t1);
+  //adjust parent
+  p->setColor(1);
+  p->setParent(s);
+  p->setLeft(u);
+  p->setRight(t1);
+  p->setSibling(t2);
+  //adjust sibling
+  s->setColor(0);
+  s->setLeft(p);
+  s->setRight(t2);
+  s->setParent(g);
+  s->setSibling(ps);
+  //adjust subtrees
+  if(t2 != NULL){
+    t2->setSibling(p);
+  }
+  if(t1 != NULL){
+    t1->setParent(p);
+    t1->setSibling(u);
+  }
+  //if the root was changed
+  if(g == NULL){
+    root = s;
+  }else{
+    child(s, g);
+  }
+  return root;
+}
+node* 32cLeft(node* u){
+  node* p = u->getParent();
+  node* s = u->getSibling();
+  node* t1 = s->getLeft();
+  node* t2 = s->getRight();
+  node* g = p->getParent();
+  node* ps = p->getSibling();
+  //adjust u
+  u->setSibling(t2);
+  //adjust parent
+  p->setColor(1);
+  p->setParent(s);
+  p->setSibling(t1);
+  p->setLeft(t2);
+  //adjust sibling
+  s->setColor(0);
+  s->setRight(p);
+  s->setParent(g);
+  s->setSibling(ps);
+  //adjust subtrees
+  if(t2 != NULL){
+    t2->setParent(p);
+    t2->setSibling(u);
+  }
+  if(t1 != NULL){
+    t1->setSibling();
+  }
+  //if the root was changed
+  if(g == NULL){
+    root = s;
+  }else{
+    child(s, g);
+  }
+  return root;
+}

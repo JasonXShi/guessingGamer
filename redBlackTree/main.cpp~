@@ -473,6 +473,98 @@ void search(int n, node* root, bool &found){
     return;
   }
 }
-void read(node* &root){
-  
+node* deletion(node* v, node* root){
+  /*if(root == NULL){
+    return root;
+  }
+  if(value < root->Value()){
+    root->setLeft(deletion(root->getLeft(), value));
+  }else if(value > root->getValue()){
+    root->setRight(deletion(root->getRight(), value));
+  }else{
+    if(root->getLeft() == NULL){
+      node* temp = root->getRight();
+      free(root);
+      return temp;
+    }else if(root->getRight() == NULL){
+      node* temp = root->getLeft();
+      free(root);
+      return temp;
+    }
+    node* temp = minNode(root->getRight());
+    root->setValue(temp->getValue());
+    root->setRight(deletion(root->getRight(), temp->getValue());
+    }*/
+  bool 2child = false;
+  if(v->getRight() == NULL){
+    //replace v with the left child
+    u = v->getLeft();
+  }else if(v->getLeft() == NULL){
+    //replace v with the right child
+    u = v->getRight();
+  }else if(v->getRight() == NULL && v->getLeft() == NULL){
+    //v has no chilren
+    u = NULL;
+  }else{
+    //v has 2 chilren
+    //find inorder successor (minNode function from BST)
+    2child = true;
+  }
+  bool blacku;
+  //simple cases
+  if(u == NULL){
+    blacku = true;
+  }else if(u->getColor() == 0){
+    blacku = true;
+  }else{
+    //u must be read
+    blacku = false;
+  }
+  if(v->getColor() == 1 || blacku == false){
+    //simple case (one of them is red)
+    node* p = v->getParent();
+    node* s = v->getSibling();
+    delete(v);
+    u->setColor(0);
+    u->setParent(p);
+    u->setSibling(s);
+    child(u, p);
+  }else{
+    //u and v are both black
+    if(u == NULL){
+      u = new node();
+      u->setValue(v->getValue());
+      //initialize u
+    }
+    u->setColor(2);
+    node* p = v->getParent();
+    node* s = v->getSibling();
+    delete(v);
+    u->setParent(p);
+    u->setSibling(s);
+    child(u, p);
+    s->setSibling(u);
+    /*while(u->getColor() == 2 && u != root){
+      
+    }*/
+    node* rr = s->getRight(); //right child of sibling
+    node* lr = s->getLeft(); //left child of sibling
+    //3.2 case a (sibling is black and has at least 1 red child)
+    if(s->getColor() == 0 && r != NULL){
+      if(p->getLeft() == s && lr->getColor() == 1){
+	//left lef case
+      }else if(p->getLeft() == s && rr->getColor() == 1){
+	//left right case
+      }else if(p->getRight() == s && rr->getColor() == 1){
+	//right right case
+      }else if(p->getRight() == s && lr->getColor() == 1){
+	//right left case
+      }
+    }
+    //3.2 case b (sibling is black and has 2 black children)
+    if(s->getColor() == 0 && blackUncle(rr) == true && blackUncle(lr) == true){
+      
+    }
+  }
 }
+

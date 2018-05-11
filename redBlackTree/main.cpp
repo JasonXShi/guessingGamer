@@ -2,7 +2,7 @@
 Kevin Men
 Red Black Tree- Allows the user to create a red black tree
 C++ Programming
-5/4
+5/10
  */
 #include "node.h"
 #include <iostream>
@@ -25,8 +25,16 @@ void rightLeft(node* &current, node* &root);
 void leftRight(node* &current, node* &root);
 bool blackUncle(node* n);
 bool redUncle(node* n);
-void read(node* &root);
-void search(int n, node* root, bool &found);
+node* search(int n, node* root, bool &found);
+node* deletion(node* v, node* root);
+node* deleteNode(int n, node* root);
+node* rightCase32c(node* u, node* root);
+node* leftCase32c(node* u, node* root);
+node* llcase32a(node* u, node* root);
+node* lrcase32a(node* u, node* root);
+node* rrcase32a(node* u, node* root);
+node* rlcase32a(node* u, node* root);
+void removeNode(node* &u);
 
 int main(){
   int inputType;
@@ -40,6 +48,7 @@ int main(){
     cout << "Type QUIT to exit the program" << endl;
     cout << "Type READ to read numbers from a file" << endl;
     cout << "Type SEARCH to search for a number in the tree" << endl;
+    cout << "Type DELETE to delete a node from the tree" << endl;
     cin.getline(input, 10, '\n');
     if(strcmp(input, "ADD") == 0){
       //ADD NODE
@@ -49,8 +58,8 @@ int main(){
       root = insert(root, value, root);
     }else if(strcmp(input, "PRINT") == 0){
       //PRINT TREE
-      print(root);
       cout << "Root value is " << root->getValue() << endl;
+      print(root);
     }else if(strcmp(input, "QUIT") == 0){
       //QUITS PROGRAMS
       return 0;
@@ -65,11 +74,10 @@ int main(){
       if(found){
 	cout << "Node found!" << endl;
       }else{
-	cout << "Node not found!" << endl;
+	//cout << "Node not found!" << endl;
       }
     }else if(strcmp(input, "READ") == 0){
       //read from a file input
-      read(root);
       cout << "File read" << endl;
       char* fileName;
       ifstream inFile;
@@ -91,6 +99,11 @@ int main(){
 	nodeCount++;
 	split = strtok(NULL, " ");
       }
+    }else if(strcmp(input, "DELETE") == 0){
+      cout << "Enter the number you would like to delete" << endl;
+      cin >> value;
+      cin.get();
+      root = deleteNode(value, root);
     }else{
       cout << "NOT A VALID RESPONSE" << endl;
     }
@@ -261,6 +274,9 @@ void rotateRight(node* &current, node* &root){
   //adjust grandparents
   if(gg != NULL){
     child(p, gg);
+    if(gs != NULL){
+      sibling(gs);
+    }
   }else{
     //adjust root node
     root = p;
@@ -388,6 +404,9 @@ void rotateLeft(node* &current, node* &root){
   //adjust great grand parent
   if(gg != NULL){
     child(p, gg);
+    if(gs != NULL){
+      sibling(gs);
+    }
   }else{
     root = p;
   }
@@ -454,81 +473,106 @@ void sibling(node* &n){
   }
 }
 //checks to see if a number is in the tree
-void search(int n, node* root, bool &found){
+node* search(int n, node* root, bool &found){
   if(root == NULL){
     found = false;
-    return;
+    return NULL;
   }
   if(n > root->getValue()){
     node* right = root->getRight();
-    search(n, right, found);
+    return search(n, right, found);
   }
   if(n < root->getValue()){
     node* left = root->getLeft();
-    search(n, left, found);
+    return search(n, left, found);
   }
   if(n == root->getValue()){
     cout << "Found the value " << root->getValue() << endl;
     found = true;
-    return;
-  }
-}
-node* deletion(node* v, node* root){
-  /*if(root == NULL){
     return root;
   }
-  if(value < root->Value()){
-    root->setLeft(deletion(root->getLeft(), value));
-  }else if(value > root->getValue()){
-    root->setRight(deletion(root->getRight(), value));
-  }else{
-    if(root->getLeft() == NULL){
-      node* temp = root->getRight();
-      free(root);
-      return temp;
-    }else if(root->getRight() == NULL){
-      node* temp = root->getLeft();
-      free(root);
-      return temp;
-    }
-    node* temp = minNode(root->getRight());
-    root->setValue(temp->getValue());
-    root->setRight(deletion(root->getRight(), temp->getValue());
-    }*/
-  bool 2child = false;
-  if(v->getRight() == NULL){
+}
+//delete fuction
+node* deleteNode(int n, node* root){
+  bool found = false;
+  node* v = search(n, root, found);
+  if(v == NULL){
+    cout << "Node not found!" << endl;
+    return root;
+  }
+  cout << "Deleting..." << v->getValue() << endl;
+  return deletion(v, root);
+}
+//finds inorder successor of a node
+node* inorderSuccessor(node* n){
+  node* current = n;
+  while(current->getLeft() != NULL){
+    current = current->getLeft();
+  }
+  return current;
+}
+//passes in the node to delete and deletes it
+node* deletion(node* v, node* root){
+  int value = v->getValue();
+  bool twoChild = false;
+  bool nullU = false;
+  node* u;
+  //if we're deleting the root
+  if(v == root){
+    return NULL;
+  }
+  if(v->getRight() == NULL && v->getLeft() == NULL){
+    //v has no chilren
+    cout << "No children" << endl;
+    u = NULL;
+    nullU = true;
+  }else if(v->getRight() == NULL){
     //replace v with the left child
     u = v->getLeft();
   }else if(v->getLeft() == NULL){
     //replace v with the right child
     u = v->getRight();
-  }else if(v->getRight() == NULL && v->getLeft() == NULL){
-    //v has no chilren
-    u = NULL;
   }else{
     //v has 2 chilren
     //find inorder successor (minNode function from BST)
-    2child = true;
+    u = inorderSuccessor(v->getRight());
+    twoChild = true;
   }
-  bool blacku;
-  //simple cases
-  blacku = blackUncle(u);
-  if(v->getColor() == 1 || blacku == false){
-    //simple case (one of them is red)
-    node* p = v->getParent();
-    node* s = v->getSibling();
-    delete(v);
-    u->setColor(0);
-    u->setParent(p);
-    u->setSibling(s);
-    child(u, p);
-  }else{
-    //u and v are both black
-    if(u == NULL){
+  if(u == NULL){
       u = new node();
       u->setValue(v->getValue());
       //initialize u
     }
+  bool blacku;
+  //simple cases
+  blacku = blackUncle(u);
+  if(u == NULL){
+      u = new node();
+      u->setValue(v->getValue());
+      //initialize u
+    }if(u == NULL){
+      u = new node();
+      u->setValue(v->getValue());
+      //initialize u
+    }
+  if(v->getColor() == 1 || blacku == false){
+    cout << "Simple case" << endl;
+    //simple case (one of them is red)
+    node* p = v->getParent();
+    node* s = v->getSibling();
+    node* us = u->getSibling();
+    delete(v);
+    u->setColor(0);
+    u->setParent(p);
+    u->setSibling(s);
+    if(p != NULL){
+      child(u, p);
+    }else{
+      root = u;
+    }
+  }else{
+    //u and v are both black
+    //delete v and put u in its place
     u->setColor(2);
     node* p = v->getParent();
     node* s = v->getSibling();
@@ -541,15 +585,19 @@ node* deletion(node* v, node* root){
       node* rr = s->getRight(); //right child of sibling
       node* lr = s->getLeft(); //left child of sibling
       //3.2 case a (sibling is black and has at least 1 red child)
-      if(s->getColor() == 0 && r != NULL){
+      if(s->getColor() == 0 && lr != NULL && rr != NULL){
 	if(p->getLeft() == s && lr->getColor() == 1){
 	  //left left case
+	  root = llcase32a(u, root);
 	}else if(p->getLeft() == s && rr->getColor() == 1){
 	  //left right case
+	  root = lrcase32a(u, root);
 	}else if(p->getRight() == s && rr->getColor() == 1){
 	  //right right case
+	  root = rrcase32a(u, root);
 	}else if(p->getRight() == s && lr->getColor() == 1){
 	  //right left case
+	  root = rlcase32a(u, root);
 	}
       }
       //3.2 case b (sibling is black and has 2 black children)
@@ -568,31 +616,207 @@ node* deletion(node* v, node* root){
 	  u->setColor(0);
 	}
 	//if parent is black, turn it to double black
-	if(parent->getColor() == 0){
+	if(p->getColor() == 0){
 	  p->setColor(2);
 	  u = p;
 	  p = u->getParent();
 	  s = u->getSibling();
+	  nullU = false;
 	}
       }
       //case 3.2 c (sibling is red)
       if(s->getColor() == 1){
 	if(s == p->getLeft()){
 	  //left case
+	  root = leftCase32c(u, root);
 	}else{
 	  //right case
+	  root = rightCase32c(u, root);
 	}
       }
     }
   }
-  //if u is the root
-  if(u == root){
-    delete(v);
-    root = u;
+  if(nullU == true){
+    cout << "Adjusting null u..." << endl;
+    removeNode(u);
   }
   return root;
 }
-node* 32cRightCase(node* u){
+//used to remove u
+void removeNode(node* &u){
+  node* p = u->getParent();
+  node* s = u ->getSibling();
+  if(u->getValue() > p->getValue()){
+    //u is a right child
+    p->setRight(NULL);
+  }else{
+    //u is a left child
+    p->setLeft(NULL);
+  }
+  if(s != NULL){
+    s->setSibling(NULL);
+  }
+  delete(u);
+  
+}
+//left left case for 3.2 part a
+node* llcase32a(node* u, node* root){
+  node* p = u->getParent();
+  node* s = u->getSibling();
+  node* t1 = s->getLeft();
+  node* t2 = s->getRight();
+  node* g = p->getParent();
+  node* ps = p->getSibling();
+  //adjust u
+  u->setSibling(t2);
+  //adjust parent
+  p->setParent(s);
+  p->setSibling(t1);
+  p->setLeft(t2);
+  p->setRight(u);
+  p->setColor(0);
+  //adjust sibling
+  s->setParent(g);
+  s->setSibling(ps);
+  s->setLeft(t1);
+  s->setRight(p);
+  //adjust subtrees
+  t1->setSibling(p);
+  t1->setColor(0);
+  if(t2 != NULL){
+    t2->setSibling(u);
+    t2->setParent(p);
+  }
+  //check if root has been changed
+  if(g == NULL){
+    root = s;
+  }else{
+    child(s, g);
+    if(ps != NULL){
+      sibling(ps);
+    }
+  }
+  return root;
+}
+//left right case for 3.2 part a
+node* lrcase32a(node* u, node* root){
+  node* p = u->getParent();
+  node* s = u->getSibling();
+  node* t1 = s->getLeft();
+  node* t2 = s->getRight();
+  node* g = p->getParent();
+  node* ps = p->getSibling();
+  //adjust u
+  u->setSibling(NULL);
+  //adjust parent
+  p->setParent(t2);
+  p->setSibling(s);
+  p->setLeft(u->getSibling());
+  //adjust sibling
+  s->setRight(NULL);
+  s->setParent(t2);
+  s->setSibling(p);
+  //adjust subtrees
+  t2->setParent(g);
+  t2->setSibling(ps);
+  t2->setLeft(s);
+  t2->setRight(p);
+  t2->setColor(0);
+  if(t1 != NULL){
+    sibling(t1);
+  }
+  //check if root has been changed
+  if(g == NULL){
+    root = t2;
+  }else{
+    child(t2, g);
+    if(ps != NULL){
+      sibling(ps);
+    }
+  }
+  return root;
+}
+//right right case for 3.2 part a
+node* rrcase32a(node* u, node* root){
+  node* p = u->getParent();
+  node* s = u->getSibling();
+  node* t1 = s->getLeft();
+  node* t2 = s->getRight();
+  node* g = p->getParent();
+  node* ps = p->getSibling();
+  //adjust u
+  u->setSibling(t1);
+  //adjust parent
+  p->setColor(0);
+  p->setLeft(u);
+  p->setRight(t1);
+  p->setParent(s);
+  p->setSibling(t2);
+  //adjust sibling
+  s->setParent(g);
+  s->setSibling(ps);
+  s->setLeft(p);
+  s->setRight(t2);
+  //adjust subtrees
+  if(t1 != NULL){
+    t1->setParent(p);
+    t1->setSibling(u);
+  }
+  if(t2 != NULL){
+    t2->setSibling(p);
+    t2->setColor(0);
+  }
+  if(g == NULL){
+    root = s;
+  }else{
+    child(s, g);
+    if(ps != NULL){
+      sibling(ps);
+    }
+  }
+  return root;
+}
+//right left case for 3.2 part a
+node* rlcase32a(node* u, node* root){
+  node* p = u->getParent();
+  node* s = u->getSibling();
+  node* t1 = s->getLeft();
+  node* t2 = s->getRight();
+  node* g = p->getParent();
+  node* ps = p->getSibling();
+  //adjust u
+  sibling(u);
+  //adjust parent
+  p->setRight(u->getSibling());
+  p->setParent(t1);
+  p->setSibling(s);
+  //adjust sibling
+  s->setSibling(p);
+  s->setLeft(NULL);
+  s->setRight(t2);
+  s->setParent(t1);
+  //adjust subtrees
+  t1->setParent(g);
+  t1->setSibling(ps);
+  t1->setLeft(p);
+  t1->setRight(s);
+  t1->setColor(0);
+  if(t2 != NULL){
+    sibling(t2);
+  }
+  //if root was changed
+  if(g == NULL){
+    root = t1;
+  }else{
+    child(t1, g);
+    if(ps != NULL){
+      sibling(ps);
+    }
+  }
+  return root;
+}
+//right case for 3.2 part c
+node* rightCase32c(node* u, node* root){
   node* p = u->getParent();
   node* s = u->getSibling();
   node* t1 = s->getLeft();
@@ -627,10 +851,14 @@ node* 32cRightCase(node* u){
     root = s;
   }else{
     child(s, g);
+    if(ps != NULL){
+      sibling(ps);
+    }
   }
   return root;
 }
-node* 32cLeft(node* u){
+//right case for 3.2 part c
+node* leftCase32c(node* u, node* root){
   node* p = u->getParent();
   node* s = u->getSibling();
   node* t1 = s->getLeft();
@@ -655,13 +883,16 @@ node* 32cLeft(node* u){
     t2->setSibling(u);
   }
   if(t1 != NULL){
-    t1->setSibling();
+    t1->setSibling(p);
   }
   //if the root was changed
   if(g == NULL){
     root = s;
   }else{
     child(s, g);
+    if(ps != NULL){
+      sibling(ps);
+    }
   }
   return root;
 }

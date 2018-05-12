@@ -49,7 +49,9 @@ int main(){
     cout << "Type READ to read numbers from a file" << endl;
     cout << "Type SEARCH to search for a number in the tree" << endl;
     cout << "Type DELETE to delete a node from the tree" << endl;
-    cin.getline(input, 10, '\n');
+    //cin.getline(input, 10, '\n');
+    cin >> input;
+    cin.get();
     if(strcmp(input, "ADD") == 0){
       //ADD NODE
       cout << "Enter a number to add into the tree" << endl;
@@ -517,10 +519,8 @@ node* deletion(node* v, node* root){
   bool twoChild = false;
   bool nullU = false;
   node* u;
-  //if we're deleting the root
-  if(v == root){
-    return NULL;
-  }
+  node* rightSubtree;
+  int x;
   if(v->getRight() == NULL && v->getLeft() == NULL){
     //v has no chilren
     cout << "No children" << endl;
@@ -536,25 +536,30 @@ node* deletion(node* v, node* root){
     //v has 2 chilren
     //find inorder successor (minNode function from BST)
     u = inorderSuccessor(v->getRight());
+    rightSubtree = u;
+    cout << "Inorder successor is " << u->getValue() << endl;
+    x = u->getValue();
     twoChild = true;
   }
-  if(u == NULL){
-      u = new node();
-      u->setValue(v->getValue());
-      //initialize u
-    }
+  
   bool blacku;
   //simple cases
   blacku = blackUncle(u);
+  if(blacku){
+    cout << "black u" << endl;
+  }else{
+    cout << "Red u" << endl;
+  }
   if(u == NULL){
-      u = new node();
-      u->setValue(v->getValue());
-      //initialize u
-    }if(u == NULL){
-      u = new node();
-      u->setValue(v->getValue());
-      //initialize u
-    }
+    cout << "U is NULL" << endl;
+    cout << "A" << endl;
+    cout << v->getValue() << endl;
+    cout << "B" << endl;
+    u = new node();
+    u->setValue(v->getValue());
+    //initialize u
+  }
+  cout << v->getColor() << endl;
   if(v->getColor() == 1 || blacku == false){
     cout << "Simple case" << endl;
     //simple case (one of them is red)
@@ -636,9 +641,19 @@ node* deletion(node* v, node* root){
       }
     }
   }
+  //corrects "null" u
   if(nullU == true){
     cout << "Adjusting null u..." << endl;
     removeNode(u);
+  }
+  //recursively calls delete on the inorder successor
+  if(twoChild == true){
+    return root;
+    cout << "Calling on inorder successor" << endl;
+    cout << "Current tree" << endl;
+    cout << "Root node is" << root->getValue() << endl;
+    print(root);
+    deleteNode(x, rightSubtree);
   }
   return root;
 }

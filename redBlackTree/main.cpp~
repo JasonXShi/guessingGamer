@@ -38,7 +38,7 @@ void removeNode(node* &u);
 
 int main(){
   int inputType;
-  char* input;
+  char input[10];
   node* root = NULL;
   int value;
   cout << "Welcome to red black tree" << endl;
@@ -133,6 +133,11 @@ node* insert(node* &current, int value, node* &root){
       current->setRight(tempNode);
       tempNode->setParent(current);
       sibling(tempNode);
+      if(tempNode->getSibling() != NULL){
+	cout << "Sibling of " << tempNode->getValue() << " is " << tempNode->getSibling()->getValue();
+	node* sib = tempNode->getSibling();
+	sibling(sib);
+      }
       assignColor(tempNode, root);
       cout << "Added the node " << tempNode->getValue() << " as the right child of " << root->getValue() << endl;
       cout << "Tree: " << endl;
@@ -152,6 +157,11 @@ node* insert(node* &current, int value, node* &root){
       current->setLeft(tempNode);
       tempNode->setParent(current);
       sibling(tempNode);
+      if(tempNode->getSibling() != NULL){
+	cout << "Sibling of " << tempNode->getValue() << " is " << tempNode->getSibling()->getValue();
+	node* sib = tempNode->getSibling();
+	sibling(sib);
+      }
       assignColor(tempNode, root);
       cout << "Added the node " << tempNode->getValue() << " as the left child of " << root->getValue() << endl;
       cout << "Tree: " << endl;
@@ -451,6 +461,10 @@ void print(node* p, int indent){
 }
 //assigns the child based on whether its greater than or less than the parent
 void child(node* &c, node* &p){
+  //makes sure both nodes exist
+  if(c == NULL || p == NULL){
+    return;
+  }
   if(c->getValue() > p->getValue()){
     p->setRight(c);
     c->setSibling(p->getLeft());
@@ -461,6 +475,10 @@ void child(node* &c, node* &p){
 }
 //returns the sibling of a node
 void sibling(node* &n){
+  //if n is null, we cannot assign it a sibling
+  if(n == NULL){
+    return;
+  }
   //if n has no parent, it is the root node
   if(n->getParent() == NULL){
     n->setSibling(NULL);
@@ -552,9 +570,7 @@ node* deletion(node* v, node* root){
   }
   if(u == NULL){
     cout << "U is NULL" << endl;
-    cout << "A" << endl;
     cout << v->getValue() << endl;
-    cout << "B" << endl;
     u = new node();
     u->setValue(v->getValue());
     //initialize u
@@ -562,6 +578,7 @@ node* deletion(node* v, node* root){
   cout << v->getColor() << endl;
   if(v->getColor() == 1 || blacku == false){
     cout << "Simple case" << endl;
+    cout << "Node being deleted " << v->getValue() << " Replacement value " << u->getValue() << endl;
     //simple case (one of them is red)
     node* p = v->getParent();
     node* s = v->getSibling();
@@ -570,6 +587,10 @@ node* deletion(node* v, node* root){
     u->setColor(0);
     u->setParent(p);
     u->setSibling(s);
+    if(us != NULL){
+      child(us, u);
+      us->setSibling(NULL);
+    }
     if(p != NULL){
       child(u, p);
     }else{
@@ -648,7 +669,10 @@ node* deletion(node* v, node* root){
   }
   //recursively calls delete on the inorder successor
   if(twoChild == true){
+    return root;
     cout << "Calling on inorder successor" << endl;
+    cout << "Current tree" << endl;
+    cout << "Root node is" << root->getValue() << endl;
     print(root);
     deleteNode(x, rightSubtree);
   }

@@ -251,7 +251,7 @@ void rotateRight(node* &current, node* &root){
   node* u = p->getSibling();
   node* t1 = x->getLeft();
   node* t2 = x->getRight();
-  node* t3 = p->getLeft();
+  node* t3 = p->getRight();
   //adjust current
   x->setColor(1);
   x->setSibling(g);
@@ -309,7 +309,7 @@ void leftRight(node* &current, node* &root){
   current->setRight(t3);
   //adjusts parent
   p->setLeft(t1);
-  p->setRight(t1);
+  p->setRight(t2);
   p->setSibling(t3);
   p->setParent(current);
   //adjusts u

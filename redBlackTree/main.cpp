@@ -101,6 +101,7 @@ int main(){
 	nodeCount++;
 	split = strtok(NULL, " ");
       }
+      cout << "test: " << root->getLeft()->getRight()->getValue() << endl;
     }else if(strcmp(input, "DELETE") == 0){
       cout << "Enter the number you would like to delete" << endl;
       cin >> value;
@@ -618,11 +619,18 @@ node* deletion(node* v, node* root){
     u->setSibling(s);
     child(u, p);
     s->setSibling(u);
-    while(u->getColor() == 2 && u != root){
+    cout << "u" << u->getValue() << endl;
+    cout << "s" << s->getValue() << endl;
+    //while(u->getColor() == 2 && u != root){
       node* rr = s->getRight(); //right child of sibling
       node* lr = s->getLeft(); //left child of sibling
+      if(rr != NULL && lr != NULL){
+	cout << "rr" << rr->getValue() << endl;
+	cout << "lr" << lr->getValue() << endl;
+      }
       //3.2 case a (sibling is black and has at least 1 red child)
-      if(s->getColor() == 0 && lr != NULL && rr != NULL){
+      if(s->getColor() == 0 && (redUncle(lr) || redUncle(rr))){
+	//cout << "Not NULL chilren" << endl;
 	if(p->getLeft() == s && lr->getColor() == 1){
 	  //left left case
 	  root = llcase32a(u, root);
@@ -640,6 +648,7 @@ node* deletion(node* v, node* root){
       //3.2 case b (sibling is black and has 2 black children)
       if(s->getColor() == 0 && blackUncle(rr) == true && blackUncle(lr) == true){
 	s->setColor(1);
+	cout << "2 black children" << endl;
 	//delete u and replace it with NULL
 	if(u == NULL){
 	  if(p->getLeft() == u){
@@ -671,7 +680,7 @@ node* deletion(node* v, node* root){
 	  root = rightCase32c(u, root);
 	}
       }
-    }
+      //}
   }
   //corrects "null" u
   if(nullU == true){

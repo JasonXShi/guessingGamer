@@ -219,6 +219,8 @@ bool redUncle(node* n){
 }
 //if uncle is black case
 void rotate(node* &current, node* &root){
+  cout << "Pre rotate" << endl;
+  print(root);
   node* x = current;
   node* p = x->getParent();
   node* u = p->getSibling();
@@ -243,6 +245,7 @@ void rotate(node* &current, node* &root){
 }
 //performs a right rotation (L-L case)
 void rotateRight(node* &current, node* &root){
+  cout << "Current: " << current->getValue() << endl;
   node* x = current;
   node* p = current->getParent();
   node* g = p->getParent();
@@ -285,6 +288,9 @@ void rotateRight(node* &current, node* &root){
   }
   //adjust grandparents
   if(gg != NULL){
+    cout << "P: " << p->getValue() << endl;
+    cout << "G: " << g->getValue() << endl;
+    cout << "Gg: " << gg->getValue() << endl;
     child(p, gg);
     if(gs != NULL){
       sibling(gs);
@@ -293,9 +299,12 @@ void rotateRight(node* &current, node* &root){
     //adjust root node
     root = p;
   }
+  cout << "Post right rotation: " << endl;
+  print(root);
 }
 //first rotatation step in left right case
 void leftRight(node* &current, node* &root){
+  cout << "left right" << current->getValue() << endl;
   node* p = current->getParent();
   node* u = p->getSibling();
   node* g = p->getParent();
@@ -317,19 +326,21 @@ void leftRight(node* &current, node* &root){
     u->setSibling(current);
   }
   //adjusts g
-  g->setLeft(p);
+  g->setLeft(current);
   //adjusts subtrees
   if(t1 != NULL){
     t1->setSibling(t2);
   }
   if(t2 != NULL){
     t2->setSibling(t1);
-    t2->setParent(current);
+    t2->setParent(p);
   }
   if(t3 != NULL){
     t3->setSibling(p);
     t3->setParent(current);
   }
+  cout << "Printing after initial rotation (LR)" << endl;
+  print(root);
   //performs second rotation
   rotateRight(p, root);
 }

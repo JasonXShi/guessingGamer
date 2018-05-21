@@ -28,6 +28,7 @@ bool redUncle(node* n);
 node* search(int n, node* root, bool &found);
 node* deletion(node* v, node* root);
 node* deleteNode(int n, node* root);
+node* rebalance(node* &u, node* &v, node* root, bool twoChild);
 node* rightCase32c(node* u, node* root);
 node* leftCase32c(node* u, node* root);
 node* llcase32a(node* u, node* root);
@@ -81,7 +82,7 @@ int main(){
     }else if(strcmp(input, "READ") == 0){
       //read from a file input
       cout << "File read" << endl;
-      char* fileName;
+      char fileName[20];
       ifstream inFile;
       char* fileInput;
       int nodeCount;
@@ -543,7 +544,7 @@ node* inorderSuccessor(node* n){
   }
   return current;
 }
-//passes in the node to delete and deletes it
+//finds u
 node* deletion(node* v, node* root){
   int value = v->getValue();
   bool twoChild = false;
@@ -566,12 +567,16 @@ node* deletion(node* v, node* root){
     //v has 2 chilren
     //find inorder successor (minNode function from BST)
     u = inorderSuccessor(v->getRight());
-    rightSubtree = u;
+    rightSubtree = v->getRight();
     cout << "Inorder successor is " << u->getValue() << endl;
     x = u->getValue();
     twoChild = true;
   }
-  
+  root = rebalance(u, v,  root, twoChild);
+  return root;
+}
+//function that rebalances the tree for deletion
+node* rebalance(node* &u, node* &v, node* root, bool twoChild){
   bool blacku;
   //simple cases
   blacku = blackUncle(u);
@@ -580,48 +585,77 @@ node* deletion(node* v, node* root){
   }else{
     cout << "Red u" << endl;
   }
-  if(u == NULL){
+  /*if(u == NULL){
     cout << "U is NULL" << endl;
     cout << v->getValue() << endl;
     u = new node();
     u->setValue(v->getValue());
     //initialize u
-  }
+    }*/
   cout << v->getColor() << endl;
   if(v->getColor() == 1 || blacku == false){
     cout << "Simple case" << endl;
-    cout << "Node being deleted " << v->getValue() << " Replacement value " << u->getValue() << endl;
+    if(u!= NULL){
+      cout << "Node being deleted " << v->getValue() << " Replacement value " << u->getValue() << endl;
+    }
     //simple case (one of them is red)
     node* p = v->getParent();
     node* s = v->getSibling();
-    node* us = u->getSibling();
+    node* us = NULL;
     delete(v);
-    u->setColor(0);
-    u->setParent(p);
-    u->setSibling(s);
-    if(us != NULL){
-      child(us, u);
-      us->setSibling(NULL);
+    cout << u->getSibling()->getValue() << endl;
+    cout << "6";
+    if(u != NULL){
+      //adjust u
+      us = u->getSibling();
+      u->setColor(0);
+      u->setParent(p);
+      u->setSibling(s);
+      if(us != NULL){
+	child(us, u);
+	us->setSibling(NULL);	
+      }
     }
     if(p != NULL){
-      child(u, p);
+      //if p is not null, set u as its child
+      if(v->getValue() < p->getValue()){
+	p->setLeft(u);
+      }else{
+	p->setRight(u);
+      }
     }else{
+      //if p is null, then the new root is u
       root = u;
     }
   }else{
+    bool doubleBlack = true;
     //u and v are both black
     //delete v and put u in its place
-    u->setColor(2);
     node* p = v->getParent();
     node* s = v->getSibling();
     delete(v);
-    u->setParent(p);
-    u->setSibling(s);
-    child(u, p);
+    if(u != NULL){
+      node* us = u->getSibling();
+      u->setParent(p);
+      u->setSibling(s);
+      cout << "u: " << u->getValue() << endl;
+      if(us != NULL){
+	child(us, u);
+      }
+    }
+    if(v->getValue() < p->getValue()){
+      p->setLeft(u);
+    }else{
+      p->setRight(u);
+    }
     s->setSibling(u);
-    cout << "u" << u->getValue() << endl;
     cout << "s" << s->getValue() << endl;
-    //while(u->getColor() == 2 && u != root){
+    //while there is still a double black to be deleted
+    while(doubleBlack){
+      if(u != NULL){
+	node* s = u->getSibling();
+	node* p = u->getParent();
+      }
       node* rr = s->getRight(); //right child of sibling
       node* lr = s->getLeft(); //left child of sibling
       if(rr != NULL && lr != NULL){
@@ -663,11 +697,8 @@ node* deletion(node* v, node* root){
 	}
 	//if parent is black, turn it to double black
 	if(p->getColor() == 0){
-	  p->setColor(2);
-	  u = p;
-	  p = u->getParent();
-	  s = u->getSibling();
-	  nullU = false;
+	  //recursively call rebalance on p
+	  //STILL NEED TO ADD
 	}
       }
       //case 3.2 c (sibling is red)
@@ -680,13 +711,15 @@ node* deletion(node* v, node* root){
 	  root = rightCase32c(u, root);
 	}
       }
-      //}
+    }
+    return root;
   }
   //corrects "null" u
+  /*
   if(nullU == true){
     cout << "Adjusting null u..." << endl;
     removeNode(u);
-  }
+    }*/
   //recursively calls delete on the inorder successor
   if(twoChild == true){
     return root;
@@ -694,9 +727,8 @@ node* deletion(node* v, node* root){
     cout << "Current tree" << endl;
     cout << "Root node is" << root->getValue() << endl;
     print(root);
-    deleteNode(x, rightSubtree);
+    deleteNode(u->getValue(), v->getRight());
   }
-  return root;
 }
 //used to remove u
 void removeNode(node* &u){

@@ -84,7 +84,7 @@ int main(){
       cout << "File read" << endl;
       char fileName[20];
       ifstream inFile;
-      char* fileInput;
+      char fileInput[500];
       int nodeCount;
       cout << "Enter the name of the file" << endl;
       cin.getline(fileName, 20, '\n');

@@ -62,6 +62,10 @@ int main(){
       root = insert(root, value, root);
     }else if(strcmp(input, "PRINT") == 0){
       //PRINT TREE
+      if(root == NULL){
+	cout << "TREE IS EMPTY!" << endl;
+	break;
+      }
       cout << "Root value is " << root->getValue() << endl;
       print(root);
     }else if(strcmp(input, "QUIT") == 0){
@@ -196,6 +200,7 @@ void assignColor(node* &n, node* &root){
     n->getParent()->getParent()->setColor(1);
     node* gp = n->getParent()->getParent();
     assignColor(gp, root);
+    return;
   }
   //checks for black uncle case
   rotate(n, root);
@@ -581,6 +586,7 @@ node* deletion(node* v, node* root){
 }
 //function that rebalances the tree for deletion
 node* rebalance(node* &u, node* &v, node* root, bool twoChild){
+  cout << "Rebalancing" << endl;
   bool lchild;
   bool blacku;
   node* p = v->getParent();
@@ -600,9 +606,11 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
       }else{
 	p->setRight(NULL);
       }
+      p->setColor(0);
     }
     if(s != NULL){
       s->setSibling(NULL);
+      s->setColor(1);
     }
     return NULL;
   }
@@ -673,12 +681,14 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
 	p->setRight(u);
       }
     }
-    s->setSibling(u);
-    cout << "s" << s->getValue() << endl;
+    if(s != NULL){
+      s->setSibling(u);
+    }
     //while there is still a double black to be deleted
     while(doubleBlack){
       //if root is double black, set it to black and break;
       if(u == root){
+	cout << "root is double black" << endl;
 	u->setColor(0);
 	return root;
       }
@@ -726,9 +736,9 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
 	s->setColor(1);
 	cout << "2 black children" << endl;
 	cout << "parent " << p->getValue() << endl;
-	print(root);
 	//delete u and replace it with NULL
 	if(u == NULL){
+	  cout << "replacing with NULL u" << endl;
 	  if(p->getLeft() == u){
 	    p->setLeft(NULL);
 	    delete(u);
@@ -741,9 +751,10 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
 	}
 	sibling(s);
 	//if parent is black, turn it to double black
-	if(p->getColor() == 0){
+	if(p->getColor() == 0 && p != root){
 	  //recursively call rebalance on p
 	  //STILL NEED TO ADD
+	  cout << "P: " << p->getValue() << " Root: " << root->getValue() << endl;
 	  u = p;
 	  s = p->getSibling();
 	  p = p->getParent();
@@ -771,41 +782,29 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
 	  node* newS = s->getRight();
 	  root = leftCase32c(u, p, s, root);
 	  if(s->getRight() != NULL){
-	    cout << "new sibling " << s->getRight()->getValue() << endl;
+	    cout << "new sibling(L) " << s->getRight()->getValue() << endl;
 	  }
 	  s = newS;
-	  //s = s->getRight();
 	}else{
 	  //right case
 	  node* newS = s->getLeft();
 	  root = rightCase32c(u, p, s, root);
 	  if(s->getLeft() != NULL){
-	    cout << "new sibling " << s->getLeft()->getValue() << endl;
+	    cout << "new sibling(R) " << s->getLeft()->getValue() << endl;
 	  }
 	  s = newS;
-	  //s = s->getLeft();
 	}
-	
-	/*doubleBlack = false;
-	cout << "deb" << endl;
-	cout << s->getColor() << endl;
-	cout << s->getLeft()->getValue();
-	cout << s->getRight()->getValue();*/
+        
       }
     }
     return root;
   }
-  //recursively calls delete on the inorder successor
-  if(twoChild == true){
-    return root;
-    cout << "Calling on inorder successor" << endl;
-    print(root);
-    deleteNode(u->getValue(), v->getLeft());
-  }
+  
 }
 
 //left left case for 3.2 part a
 node* llcase32a(node* u, node* p, node* s, node* root){
+  int color = p->getColor();
   node* t1 = s->getLeft();
   node* t2 = s->getRight();
   node* g = p->getParent();
@@ -825,7 +824,7 @@ node* llcase32a(node* u, node* p, node* s, node* root){
   s->setSibling(ps);
   s->setLeft(t1);
   s->setRight(p);
-  s->setColor(1);
+  s->setColor(color);
   //adjust subtrees
   t1->setSibling(p);
   t1->setColor(0);
@@ -846,44 +845,20 @@ node* llcase32a(node* u, node* p, node* s, node* root){
 }
 //left right case for 3.2 part a
 node* lrcase32a(node* u, node* p, node* s, node* root){
-  node* t1 = s->getLeft();
-  node* t2 = s->getRight();
-  node* g = p->getParent();
-  node* ps = p->getSibling();
-  //adjust u
-  if(u != NULL){
-    u->setSibling(NULL);
-  }
-  //adjust parent
-  p->setParent(t2);
-  p->setSibling(s);
-  p->setLeft(NULL);
-  //adjust sibling
+  node* redNode = s->getRight();
+  int value = s->getValue();
+  s->setValue(redNode->getValue());
   s->setRight(NULL);
-  s->setParent(t2);
-  s->setSibling(p);
-  //adjust subtrees
-  t2->setParent(g);
-  t2->setSibling(ps);
-  t2->setLeft(s);
-  t2->setRight(p);
-  t2->setColor(0);
-  if(t1 != NULL){
-    sibling(t1);
-  }
-  //check if root has been changed
-  if(g == NULL){
-    root = t2;
-  }else{
-    child(t2, g);
-    if(ps != NULL){
-      sibling(ps);
-    }
-  }
-  return root;
+  s->setLeft(redNode);
+  redNode->setValue(value);
+  cout << "after left right" << "value is " << value << endl;
+  print(root);
+  return llcase32a(u, p, s, root);
+  
 }
 //right right case for 3.2 part a
 node* rrcase32a(node* u, node* p, node* s, node* root){
+  int color = p->getColor();
   node* t1 = s->getLeft();
   node* t2 = s->getRight();
   node* g = p->getParent();
@@ -903,6 +878,7 @@ node* rrcase32a(node* u, node* p, node* s, node* root){
   s->setSibling(ps);
   s->setLeft(p);
   s->setRight(t2);
+  s->setColor(color);
   //adjust subtrees
   if(t1 != NULL){
     t1->setParent(p);
@@ -924,42 +900,15 @@ node* rrcase32a(node* u, node* p, node* s, node* root){
 }
 //right left case for 3.2 part a
 node* rlcase32a(node* u, node* p, node* s, node* root){
-  node* t1 = s->getLeft();
-  node* t2 = s->getRight();
-  node* g = p->getParent();
-  node* ps = p->getSibling();
-  //adjust u
-  if(u != NULL){
-    sibling(u);
-  }
-  //adjust parent
-  p->setRight(u->getSibling());
-  p->setParent(t1);
-  p->setSibling(s);
-  //adjust sibling
-  s->setSibling(p);
+  node* redNode = s->getLeft();
+  int value = redNode->getValue();
+  s->setValue(redNode->getValue());
   s->setLeft(NULL);
-  s->setRight(t2);
-  s->setParent(t1);
-  //adjust subtrees
-  t1->setParent(g);
-  t1->setSibling(ps);
-  t1->setLeft(p);
-  t1->setRight(s);
-  t1->setColor(0);
-  if(t2 != NULL){
-    sibling(t2);
-  }
-  //if root was changed
-  if(g == NULL){
-    root = t1;
-  }else{
-    child(t1, g);
-    if(ps != NULL){
-      sibling(ps);
-    }
-  }
-  return root;
+  s->setRight(redNode);
+  redNode->setValue(value);
+  cout << "after left right" << endl;
+  print(root);
+  return rrcase32a(u, p, s, root);
 }
 //right case for 3.2 part c
 node* rightCase32c(node* &u, node* &p, node* &s, node* root){

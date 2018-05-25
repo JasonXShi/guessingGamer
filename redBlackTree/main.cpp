@@ -145,10 +145,8 @@ node* insert(node* &current, int value, node* &root){
 	node* sib = tempNode->getSibling();
 	sibling(sib);
       }
+      //ADD THE NODE INTO THE TREE
       assignColor(tempNode, root);
-      cout << "Added the node " << tempNode->getValue() << " as the right child of " << root->getValue() << endl;
-      cout << "Tree: " << endl;
-      print(root);
       return root;
     }
     //goes into left subtree
@@ -170,9 +168,6 @@ node* insert(node* &current, int value, node* &root){
 	sibling(sib);
       }
       assignColor(tempNode, root);
-      cout << "Added the node " << tempNode->getValue() << " as the left child of " << root->getValue() << endl;
-      cout << "Tree: " << endl;
-      print(root);
       return root;
     }
   }
@@ -227,8 +222,6 @@ bool redUncle(node* n){
 }
 //if uncle is black case
 void rotate(node* &current, node* &root){
-  cout << "Pre rotate" << endl;
-  print(root);
   node* x = current;
   node* p = x->getParent();
   node* u = p->getSibling();
@@ -307,8 +300,6 @@ void rotateRight(node* &current, node* &root){
     //adjust root node
     root = p;
   }
-  cout << "Post right rotation: " << endl;
-  print(root);
 }
 //first rotatation step in left right case
 void leftRight(node* &current, node* &root){
@@ -347,8 +338,6 @@ void leftRight(node* &current, node* &root){
     t3->setSibling(p);
     t3->setParent(current);
   }
-  cout << "Printing after initial rotation (LR)" << endl;
-  print(root);
   //performs second rotation
   rotateRight(p, root);
 }
@@ -611,17 +600,10 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
   }
   //simple cases
   blacku = blackUncle(u);
-  if(blacku){
-    cout << "black u" << endl;
-  }else{
-    cout << "Red u" << endl;
-  }
   cout << v->getColor() << endl;
   if(v->getColor() == 1 || blacku == false){
     cout << "Simple case" << endl;
-    if(u!= NULL){
-      cout << "Node being deleted " << v->getValue() << " Replacement value " << u->getValue() << endl;
-    }
+    
     //simple case (one of them is red)
     node* us = NULL;
     delete(v);
@@ -686,10 +668,7 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
       }
       node* rr = s->getRight(); //right child of sibling
       node* lr = s->getLeft(); //left child of sibling
-      if(rr != NULL && lr != NULL){
-	cout << "rr" << rr->getValue() << endl;
-	cout << "lr" << lr->getValue() << endl;
-      }
+      
       //3.2 case a (sibling is black and has at least 1 red child)
       if(s->getColor() == 0 && (redUncle(lr) || (redUncle(rr)))){
 	cout << "At least one red child" << endl;
@@ -730,10 +709,8 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
       }else if(s->getColor() == 0 && blackUncle(rr) == true && blackUncle(lr) == true){	
 	//3.2 case b (sibling is black and has 2 black children)
 	s->setColor(1);
-	cout << "2 black children" << endl;
-	//delete u and replace it with NULL
+        //delete u and replace it with NULL
 	if(u == NULL){
-	  cout << "replacing with NULL u" << endl;
 	  if(p->getLeft() == u){
 	    p->setLeft(NULL);
 	    delete(u);
@@ -756,8 +733,6 @@ node* rebalance(node* &u, node* &v, node* root, bool twoChild){
 	  }
 	  if(s != NULL ){
 	    cout << "new sibling " << s->getValue() << endl;
-	  }else{
-	    cout << "NULL PARENT OR SIBLING" << endl;
 	  }
 	  print(root);
 	  cout << "recursive call on p" << endl;
@@ -844,8 +819,6 @@ node* lrcase32a(node* u, node* p, node* s, node* root){
   s->setRight(NULL);
   s->setLeft(redNode);
   redNode->setValue(value);
-  cout << "after left right" << "value is " << value << endl;
-  print(root);
   return llcase32a(u, p, s, root);
   
 }
@@ -900,8 +873,6 @@ node* rlcase32a(node* u, node* p, node* s, node* root){
   s->setLeft(NULL);
   s->setRight(redNode);
   redNode->setValue(value);
-  cout << "after left right" << endl;
-  print(root);
   return rrcase32a(u, p, s, root);
 }
 //right case for 3.2 part c

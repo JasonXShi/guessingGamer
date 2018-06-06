@@ -239,6 +239,11 @@ void path(vector<vertex*> &v, char a[], char b[]){
     }
   }
   //Dijsktra's Algorithm to find the shortest path
-  vector<vertex*> sptSet; //vector used in place of tree set, keeps track of vertices included in the shortest path
-  int length = 0; //keeps track of the length in the shortest path
+  vector<vector<vertex*>> sptSet; //vector used in place of tree set, keeps track of vertices included in the shortest path
+  vector<vertex*> connected;
+  vector<int> length;
+  sptSet.begin().push_back(start);
+  while(true){
+    
+  }
 }

@@ -7,6 +7,8 @@ Allows the user to create a directed graph
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <limits>
+#include <algorithm>
 
 using namespace std;
 
@@ -21,6 +23,7 @@ void print(vector<vertex*> v);
 void deleteVertex(vector<vertex*> &v, char* name);
 void deleteEdge(vector<vertex*> &v, char a[], char b[]);
 void path(vector<vertex*> v, char a[], char b[]);
+bool contains(vector<vertex*> v, vertex* a);
 
 int main(){
   cout << "Welcome to graph creator!" << endl;
@@ -87,8 +90,8 @@ int main(){
       deleteVertex(v, deleteName);
     }else if(strcmp(input, "DELETE EDGE") == 0){
       //delete an edge
-      char start[10];
-      char end[10];
+      char* start;
+      char* end;
       cout << "Enter the name of the starting vertex" << endl;
       cin.getline(start, 10, '\n');
       cout << "Enter the name of the ending vertex" << endl;
@@ -102,6 +105,9 @@ int main(){
       cin.getline(start, 10, '\n');
       cout << "Enter the ending vertex: " << endl;
       cin.getline(end, 10, '\n');
+      cout << "Calling path" << endl;
+      path(v, start, end);
+      cout << "Path found" << endl;
     }else if(strcmp(input, "QUIT") == 0){
       //exits the program
       break;
@@ -226,7 +232,7 @@ void deleteEdge(vector<vertex*> &v, char a[], char b[]){
     cout << "That edge does not exist!" << endl;
   }
 }
-void path(vector<vertex*> &v, char a[], char b[]){
+void path(vector<vertex*> v, char a[], char b[]){
   vertex* start = NULL;
   vertex* end = NULL;
   //finds the target vertecies in the vector
@@ -238,12 +244,93 @@ void path(vector<vertex*> &v, char a[], char b[]){
       end = (*it);
     }
   }
-  //Dijsktra's Algorithm to find the shortest path
-  vector<vector<vertex*>> sptSet; //vector used in place of tree set, keeps track of vertices included in the shortest path
-  vector<vertex*> connected;
-  vector<int> length;
-  sptSet.begin().push_back(start);
-  while(true){
-    
+  if(start == NULL || end == NULL){
+    cout << "INVALID VERTICES" << endl;
+    return;
   }
+  //Dijsktra's Algorithm to find the shortest path
+  vector<vector<vertex*>> paths; //vector that stores the vertices in the path of the shortest 
+  vector<vertex*> newPath;
+  vector<vertex*> sptSet; //vector that stores which vertices are in the shortest path 
+  vector<int> length; //stores the length of each path
+  vector<vertex*> connected;
+  vector<vertex*> c;
+  c.push_back(start);
+  paths.push_back(c);
+  sptSet.push_back(start);
+  length.push_back(0);
+  vertex* current;
+  vertex* next;
+  vertex* previous;
+  int currentLength;
+  int count;
+  int count2;
+  int minimum;
+  bool finished = false;
+  bool found;
+  while(!finished){
+    cout << "hi" << endl;
+    found = false;
+    finished = true;
+    count = 0;
+    minimum = std::numeric_limits<int>::max();
+    //loop through each vertex in the sptSet
+    for(vector<vertex*>::iterator it = sptSet.begin(); it != sptSet.end(); ++it){
+      count++;
+      current = (*it);
+      currentLength = length.at(count - 1);
+      connected = current->edges;
+      count2 = 0;
+      //check all the connected paths
+      if(!connected.empty()){
+	finished = false;
+	for(vector<vertex*>::iterator it2 = connected.begin(); it2 != connected.end(); ++it2){
+	  count2++;
+	  if(!contains(sptSet, (*it2))){
+	    if((currentLength + current->weights.at(count2-1)) < minimum){
+	      //the shortest path will be added to sptSet
+	      minimum = currentLength + current->weights.at(count2-1);
+	      next = (*it2);
+	      cout << next->label;
+	      previous = current;
+	      found = true;
+	    }
+	  }
+	}
+      }
+      
+    }
+    if(finished || !found){
+      cout << "No path found" << endl;
+      return;
+    }
+    //updates the vectors
+    for(vector<vector<vertex*>>::iterator it = paths.begin(); it != paths.end(); ++it){
+      c = (*it);
+      if(c.back() == previous){
+	newPath = (*it);
+	newPath.push_back(next);
+	paths.push_back(newPath);
+	length.push_back(minimum);
+	sptSet.push_back(next);
+	break;
+      }
+    }
+    //if we found the path to the end node
+    if(next == end){
+      cout << "Path: ";
+      for(vector<vertex*>::iterator it = newPath.begin(); it != newPath.end(); ++it){
+	cout << (*it)->label << " ";
+      }
+      cout << endl;
+      cout << "Length: " << minimum << endl;
+      return;
+    }
+  }
+}
+bool contains(vector<vertex*> v, vertex* a){
+  if(std::find(v.begin(), v.end(), a) != v.end()){
+    return true;
+  }
+  return false;
 }

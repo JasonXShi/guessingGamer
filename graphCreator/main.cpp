@@ -2,7 +2,7 @@
 Graph Creator
 Kevin Men
 Allows the user to create a directed graph
-5/29
+6/7/18
  */
 #include <iostream>
 #include <cstring>
@@ -19,6 +19,7 @@ struct vertex{
   vector<int> weights;
 };
 
+//function prototypes
 void print(vector<vertex*> v);
 void deleteVertex(vector<vertex*> &v, char* name);
 void deleteEdge(vector<vertex*> &v, char a[], char b[]);
@@ -27,6 +28,7 @@ bool contains(vector<vertex*> v, vertex* a);
 
 int main(){
   cout << "Welcome to graph creator!" << endl;
+  //vector of vertices
   vector<vertex*> v;
   while(true){
     cout << "Type 'PRINT' to print out the adjacency matrix" << endl;
@@ -47,6 +49,7 @@ int main(){
       cout << "Enter the label for the vertex" << endl;
       cin >> labelName;
       cin.get();
+      //adds the vertex into the vector of vertices
       vertex* tempNode = new vertex();
       tempNode->label = labelName;
       v.push_back(tempNode);
@@ -141,6 +144,7 @@ void print(vector<vertex*> v){
 	  count++;
 	  //loops through the connected vector, if one of the connected vertexes in the row is the column, print out the value of the edge
 	  if((*it3)->label == (*it2)->label){
+	    //print out the weight of the edge
 	    cout << "\t" << length.at(count-1);
 	    found = true;
 	  }
@@ -232,6 +236,7 @@ void deleteEdge(vector<vertex*> &v, char a[], char b[]){
     cout << "That edge does not exist!" << endl;
   }
 }
+//finds the shortest path between two vertices using Dijkstra's algorithm
 void path(vector<vertex*> v, char a[], char b[]){
   vertex* start = NULL;
   vertex* end = NULL;
@@ -244,17 +249,19 @@ void path(vector<vertex*> v, char a[], char b[]){
       end = (*it);
     }
   }
+  //if one or both the vertices were not found
   if(start == NULL || end == NULL){
     cout << "INVALID VERTICES" << endl;
     return;
   }
   //Dijsktra's Algorithm to find the shortest path
   vector<vector<vertex*>> paths; //vector that stores the vertices in the path of the shortest 
-  vector<vertex*> newPath;
+  vector<vertex*> newPath; //stores the new path to be added
   vector<vertex*> sptSet; //vector that stores which vertices are in the shortest path 
   vector<int> length; //stores the length of each path
-  vector<vertex*> connected;
-  vector<vertex*> c;
+  vector<vertex*> connected; //stores all the connected vertices of a given vertex
+  vector<vertex*> c; //used to push the initial path into paths
+  //puts the start vertex into the paths and sptSet
   c.push_back(start);
   paths.push_back(c);
   sptSet.push_back(start);
@@ -270,6 +277,7 @@ void path(vector<vertex*> v, char a[], char b[]){
   bool found;
   while(!finished){
     cout << "hi" << endl;
+    //resets variables
     found = false;
     finished = true;
     count = 0;
@@ -284,8 +292,10 @@ void path(vector<vertex*> v, char a[], char b[]){
       //check all the connected paths
       if(!connected.empty()){
 	finished = false;
+	//loops through all the connected vertices, and finds which path is the shortest
 	for(vector<vertex*>::iterator it2 = connected.begin(); it2 != connected.end(); ++it2){
 	  count2++;
+	  //makes sure the vertex isnt already in sptSet
 	  if(!contains(sptSet, (*it2))){
 	    if((currentLength + current->weights.at(count2-1)) < minimum){
 	      //the shortest path will be added to sptSet
@@ -298,8 +308,8 @@ void path(vector<vertex*> v, char a[], char b[]){
 	  }
 	}
       }
-      
     }
+    //if there are no connected vertices or we did not find a next vertex, then there is no path
     if(finished || !found){
       cout << "No path found" << endl;
       return;
@@ -318,6 +328,7 @@ void path(vector<vertex*> v, char a[], char b[]){
     }
     //if we found the path to the end node
     if(next == end){
+      //prints out the path and the length of the path
       cout << "Path: ";
       for(vector<vertex*>::iterator it = newPath.begin(); it != newPath.end(); ++it){
 	cout << (*it)->label << " ";
@@ -328,9 +339,12 @@ void path(vector<vertex*> v, char a[], char b[]){
     }
   }
 }
+//checks if a vector contains a certain vertex
 bool contains(vector<vertex*> v, vertex* a){
   if(std::find(v.begin(), v.end(), a) != v.end()){
+    //contains a
     return true;
   }
+  //doesn't contain a
   return false;
 }

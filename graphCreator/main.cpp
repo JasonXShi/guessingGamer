@@ -21,7 +21,7 @@ struct vertex{
 
 //function prototypes
 void print(vector<vertex*> v);
-void deleteVertex(vector<vertex*> &v, char* name);
+void deleteVertex(vector<vertex*> &v, char name[]);
 void deleteEdge(vector<vertex*> &v, char a[], char b[]);
 void path(vector<vertex*> v, char a[], char b[]);
 bool contains(vector<vertex*> v, vertex* a);
@@ -86,7 +86,7 @@ int main(){
       }
     }else if(strcmp(input, "DELETE VERTEX") == 0){
       //delete a vertex
-      char* deleteName;
+      char deleteName[10];
       cout << "Enter the name of the vertex you would like to delete" << endl;
       cin >> deleteName;
       cin.get();
@@ -108,9 +108,7 @@ int main(){
       cin.getline(start, 10, '\n');
       cout << "Enter the ending vertex: " << endl;
       cin.getline(end, 10, '\n');
-      cout << "Calling path" << endl;
       path(v, start, end);
-      cout << "Path found" << endl;
     }else if(strcmp(input, "QUIT") == 0){
       //exits the program
       break;
@@ -159,7 +157,7 @@ void print(vector<vertex*> v){
   cout << endl;
 }
 //delets a vertex and all edges to it
-void deleteVertex(vector<vertex*> &v, char* name){
+void deleteVertex(vector<vertex*> &v, char name[]){
   vertex* n = NULL;
   //loops through vector and searches for a vertex matching the input
   for(vector<vertex*>::iterator it = v.begin(); it != v.end(); ++it){
@@ -185,8 +183,10 @@ void deleteVertex(vector<vertex*> &v, char* name){
       //if any of them were connected to the vertex being deleted, remove those connections
       count++;
       if((*it2) == n){
-	connect.erase(it);
+	connect.erase(it2);
 	length.erase(length.begin()+(count - 1));
+	(*it)->edges = connect;
+	(*it)->weights = length;
 	break;
       }
     }
@@ -200,7 +200,6 @@ void deleteEdge(vector<vertex*> &v, char a[], char b[]){
   vertex* second = NULL;
   //searches for the start and ending vertex in the vector
   for(vector<vertex*>::iterator it = v.begin(); it != v.end();++it){
-    cout << (*it)->label << endl;
     if(strcmp((*it)->label, a) == 0){
       first = (*it);
     }
@@ -220,7 +219,6 @@ void deleteEdge(vector<vertex*> &v, char a[], char b[]){
   //loops through the connections of the first vertex
   for(vector<vertex*>::iterator it = connected1.begin(); it != connected1.end(); ++it){
     count++;
-    cout << (*it)->label << endl;
     //if there is an edge from the starting vertex to the ending vertex, delete it
     if((*it) == second){
       found = true;
@@ -276,7 +274,6 @@ void path(vector<vertex*> v, char a[], char b[]){
   bool finished = false;
   bool found;
   while(!finished){
-    cout << "hi" << endl;
     //resets variables
     found = false;
     finished = true;
@@ -301,7 +298,6 @@ void path(vector<vertex*> v, char a[], char b[]){
 	      //the shortest path will be added to sptSet
 	      minimum = currentLength + current->weights.at(count2-1);
 	      next = (*it2);
-	      cout << next->label;
 	      previous = current;
 	      found = true;
 	    }

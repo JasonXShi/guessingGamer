@@ -44,6 +44,22 @@ int main(){
     hashTable[i] = NULL;
   }
   int size = 100;
+  ifstream inFile;
+  char fileName[20];
+  char* fileInput;
+  char* split;
+  cout << "Enter the file name for first names" << endl;
+  cin.getline(fileName, 20, '\n');
+  inFile.open(fileName);
+  if(!inFile){
+    cout << "file does not exist!" << endl;
+    return 0;
+  }
+  inFile.getline(fileInput, 1000, '\n');
+  split = strtok(fileInput, " ");
+  while(split != NULL){
+    
+  }
   while(true){
     cout << "Type 'add' to manual add a student to the list" << endl;
     cout << "Type 'rand' to generate a random student" << endl;
@@ -77,6 +93,13 @@ int main(){
       }
     }else if(strcmp(input, "rand") == 0){
       //randomly generate a new student
+      int loop;
+      cout << "How many students would you like to add?" << endl;
+      cin >> loop;
+      cin.get();
+      for(int i = 0; i < loop; i++){
+	
+      }
     }else if(strcmp(input, "print") == 0){
       //print out the list of students
       print(hashTable, size);

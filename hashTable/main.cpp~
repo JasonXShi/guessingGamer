@@ -38,7 +38,8 @@ void deleteStudent(node* hashTable[], int id, int size);
 int main(){
   cout << "Welcome to hash table!" << endl;
   char input[10];
-  node* hashTable[100];
+  node* hashTable[100]; //hash table
+  vector<int> ids; //stores all student ids to make sure we don't have duplicates
   for(int i = 0; i < 100; i++){
     hashTable[i] = NULL;
   }
@@ -57,6 +58,7 @@ int main(){
       float gpa;
       char* firstName = new char(30);
       char* lastName = new char(30);
+      //gets the information for the new student
       cout << "Enter the student's first name" << endl;
       cin.getline(firstName, 30, '\n');
       cout << "Enter the student's last name" << endl;
@@ -69,7 +71,6 @@ int main(){
       cin.get();
       s = create(firstName, lastName, id, gpa);
       int index = hash(id, size);
-      cout << s->firstName << endl;
       bool valid = add(hashTable, index, s);
       if(!valid){
 	//need to rehash the table
@@ -85,6 +86,7 @@ int main(){
       cout << "Enter the ID of the student to be deleted" << endl;
       cin >> id;
       cin.get();
+      ids.push_back(id);
       deleteStudent(hashTable, id, size);
     }else if(strcmp(input, "quit") == 0){
       //exits the program
@@ -111,6 +113,7 @@ int hash(int id, int size){
 //creates a new student
 student* create(char* firstName, char* lastName, int id, float gpa){
   student* temp = new student();
+  //creates a new student
   temp->firstName = firstName;
   temp->lastName = lastName;
   temp->id = id;
@@ -120,14 +123,14 @@ student* create(char* firstName, char* lastName, int id, float gpa){
 
 //adds a student into the has table
 bool add(node* hashTable[], int index, student* s){
+  //if we don't need to chain nodes together
   if(hashTable[index] == NULL){
-    cout << "first node" << endl;
     node* temp = new node();
     temp->value = s;
     hashTable[index] = temp;
-    cout << hashTable[index]->value->firstName << endl;
     return true;
   }
+  //if not, add this node to the beginning of the linked list
   node* current = hashTable[index];
   node* temp = new node();
   temp->next = current;
@@ -140,23 +143,28 @@ bool add(node* hashTable[], int index, student* s){
     current = current->next;
     count++;
   }
+  //if we have more than 3 nodes in the chain, we need to rehash
   if(count > 3){
     //rehash
     return false;
   }else{
+    //we don't need to rehash
     return true;
   }
 }
 
 //prints out the list of students
 void print(node* table[], int size){
-  cout << fixed;;
+  //sets the precision to 2 decimal points
+  cout << fixed;
   cout << setprecision(2);
   node* current;
   for(int i = 0; i < size; i++){
     if(table[i] != NULL){
+      //makes sure there is a student at the index
       current = table[i];
       while(current != NULL){
+	//while there are still students in the current chain, keep printing them out
 	if(current->value != NULL){
 	  cout << "First Name: " << current->value->firstName << endl;
 	  cout << "Last Name: " << current->value->lastName << endl;
@@ -173,21 +181,34 @@ void print(node* table[], int size){
 
 //deletes a student from the hash table
 void deleteStudent(node* hashTable[], int id, int size){
+  //finds which position in the hash table the given id is at
   int hashID = hash(id, size);
-  node* current = hashTable[index];
-  node* previous = current;
+  node* current = hashTable[hashID];
+  node* previous = NULL;
+  //there are no nodes at the hashID
+  if(current == NULL){
+    cout << "Student not found! (nothing in hashID)" << endl;
+    return;
+  }
+  //loops through the chain and searches for that id
   while(current != NULL){
     if(current->value->id == id){
-      if(previous = NULL){
+      if(previous == NULL){
+	//if there is only one node in the chain
 	delete current;
-	hashTable[index] = NULL;
+	hashTable[hashID] = NULL;
       }else{
+	//if there are multiple nodes in the chain
 	previous->next = current->next;
 	delete current;
       }
       return;
     }
+    //keep looping though the chain until we find that id
     previous = current;
     current = current->next;
   }
+  //the student was not found
+  cout << "Student not found! (ID was not in hashID)" << endl;
+  return;
 }

@@ -11,6 +11,9 @@ Allows the user to create a list of students using a hash table
 #include <iomanip>
 #include <cmath>
 #include <algorithm>
+#include <fstream>
+#include <time.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -28,38 +31,74 @@ struct node{
 };
 
 //function prototypes
-int hash(int id, int size);
-void rehash(node* newHash[], node* oldHash[]);
+int hash1(int id, int size);
+void rehash(node* newHash[], node* oldHash[], int &size);
 void print(node* table[], int size);
 student* create(char* firstName, char* lastName, int id, float gpa);
 bool add(node* hashTable[], int index, student* s);
 void deleteStudent(node* hashTable[], int id, int size);
+bool isValid(node* hashTable[], int size);
 
 int main(){
   cout << "Welcome to hash table!" << endl;
   char input[10];
-  node* hashTable[100]; //hash table
+  char response[2];
+  node** hashTable = new node*[100]; //hash table
   vector<int> ids; //stores all student ids to make sure we don't have duplicates
   for(int i = 0; i < 100; i++){
-    hashTable[i] = NULL;
+    hashTable[i] = NULL; //initialize everything in the hash table to NULL
   }
   int size = 100;
   ifstream inFile;
+  ifstream inFile2;
   char fileName[20];
-  char* fileInput;
+  char fileName2[20];
+  char fileInput[1000];
+  char fileInput2[1000];
   char* split;
-  cout << "Enter the file name for first names" << endl;
-  cin.getline(fileName, 20, '\n');
-  inFile.open(fileName);
-  if(!inFile){
-    cout << "file does not exist!" << endl;
-    return 0;
-  }
-  inFile.getline(fileInput, 1000, '\n');
-  split = strtok(fileInput, " ");
-  while(split != NULL){
+  vector<char*> firstNames;
+  vector<char*> lastNames;
+  bool randStudent = false;
+  //gets inputs from txt file for random student generator
+  cout << "Would you like to use the random student generator? (y/n)" << endl;
+  cin.getline(response, 2, '\n');
+  if(strcmp(response, "y") == 0){
+    /*
+      NOTES ABOUT FILES:
+      -each file consists of names separated by spaces
+      -the maximum length for the file is 1000 characters
+     */
+    randStudent = true;
+    cout << "Enter the file name for first names" << endl;
+    cin.getline(fileName, 20, '\n');
+    inFile.open(fileName);
+    if(!inFile){
+      cout << "file does not exist!" << endl;
+      randStudent = false;
+    }
+    inFile.getline(fileInput, 1000, '\n');
+    split = strtok(fileInput, " ");
+    while(split != NULL){
+      firstNames.push_back(split);
+      split = strtok(NULL, " ");
+    }
+    char* split2;
+    cout << "Enter the file name for last names" << endl;
+    cin.getline(fileName2, 20, '\n');
+    inFile2.open(fileName2);
+    if(!inFile2){
+      cout << "file does not exist!" << endl;
+      randStudent = false;
+    }
+    inFile2.getline(fileInput2, 1000, '\n');
+    split2 = strtok(fileInput2, " ");
+    while(split2 != NULL){
+      lastNames.push_back(split2);
+      split2 = strtok(NULL, " ");
     
+    }
   }
+  srand(time(NULL));
   while(true){
     cout << "Type 'add' to manual add a student to the list" << endl;
     cout << "Type 'rand' to generate a random student" << endl;
@@ -85,20 +124,67 @@ int main(){
       cout << "Enter the student's gpa " << endl;
       cin >> gpa;
       cin.get();
+      ids.push_back(id);
       s = create(firstName, lastName, id, gpa);
-      int index = hash(id, size);
+      int index = hash1(id, size);
       bool valid = add(hashTable, index, s);
       if(!valid){
 	//need to rehash the table
+	cout << "Rehashing..." << endl;
+	node* newHash[size * 2];
+	rehash(newHash, hashTable, size);
+	delete [] hashTable;
+	hashTable = newHash;
       }
     }else if(strcmp(input, "rand") == 0){
-      //randomly generate a new student
-      int loop;
-      cout << "How many students would you like to add?" << endl;
-      cin >> loop;
-      cin.get();
-      for(int i = 0; i < loop; i++){
-	
+      if(randStudent){
+	int max = 0;
+	for(int i = 0; i < ids.size(); i++){
+	  if(ids.at(i) > max){
+	    max = ids.at(i);
+	  }
+	}
+	//randomly generate a new student
+	int loop;
+	cout << "How many students would you like to add?" << endl;
+	cin >> loop;
+	cin.get();
+	bool needRehash = false;
+	for(int i = 0; i < loop; i++){
+	  char* firstName = new char(30);
+	  char* lastName = new char(30);
+	  int id;
+	  float gpa;
+	  //randomly picks names from the name vector
+	  int fName = rand() % firstNames.size() + 1;
+	  int lName = rand() % lastNames.size() + 1;
+	  firstName = firstNames.at(fName - 1);
+	  lastName = lastNames.at(lName - 1);
+	  //ID is determined by adding 1 to the current highest ID number
+	  id = max + 1;
+	  ids.push_back(id);
+	  max+= 1;
+	  //generates a random decimal from 0-4
+	  gpa = ((double) rand() / (RAND_MAX)) * 4;
+	  student* s = create(firstName, lastName, id, gpa);
+	  int index = hash1(id, size);
+	  bool valid = add(hashTable, index, s);
+	  if(!valid){
+	    needRehash = true;
+	  }
+	}
+	if(needRehash){
+	  //need to rehash the table
+	  cout << "Rehashing..." << endl;
+	  node** newHash = new node*[size * 2];
+	  rehash(newHash, hashTable, size);
+	  delete [] hashTable;
+	  hashTable = newHash;
+	  
+	}
+      }else{
+	//if the files from the beginning of the program were not found or never entered
+	cout << "Missing name files" << endl;
       }
     }else if(strcmp(input, "print") == 0){
       //print out the list of students
@@ -121,14 +207,65 @@ int main(){
   } //while loop
 } //main
 
+
+//if one of our chains is longer than 3, we must rehash our table
+void rehash(node* newHash[], node* oldHash[], int &size){
+  //initializes everything in the new hash table to null
+  for(int i = 0; i < (size * 2); i++){
+    newHash[i] = NULL;
+  }
+  //doubles the size
+  int newSize = 2 * size;
+  for(int i = 0; i < size; i++){
+    if(oldHash[i] != NULL){
+      node* current = oldHash[i];
+      while(current != NULL){
+	if(current->value != NULL){
+	  //puts all nodes from the old hash table into the new hash table
+	  student* s = current->value;
+	  //reperforms hash function to adjust position in the new hash table
+	  int index = hash1(s->id, newSize);
+	  add(newHash, index, s);
+	  current = current->next;
+	}
+      }
+    }
+  }
+  //adjust size
+  size = newSize;
+}
+
+//checks if a hash table is valid
+bool isValid(node* hashTable[], int size){
+  for(int i = 0; i < size; i++){
+    if(hashTable[i] != NULL){
+      int count = 1;
+      node* current = hashTable[i];
+      //checks to see how long the chain is
+      while(current != NULL){
+	current = current->next;
+	count++;
+      }
+      //if we have more than 3 nodes in the chain, we need to rehash
+      if(count > 3){
+	//rehash
+	return false;
+      }
+    }
+  }
+  //no chains longer than 3
+  return true;
+}
+
 //returns the hash value for a given id
-int hash(int id, int size){
+int hash1(int id, int size){
   //gets the sum of all the digits in the id
   int sum = 0;
   while(id != 0){
     sum = sum + id % 10;
     id = id / 10;
   }
+  //multiplies by size of has htable divided by 7
   int multiplier = trunc(size/7);
   return ((sum  * multiplier) % size);
 }
@@ -205,7 +342,7 @@ void print(node* table[], int size){
 //deletes a student from the hash table
 void deleteStudent(node* hashTable[], int id, int size){
   //finds which position in the hash table the given id is at
-  int hashID = hash(id, size);
+  int hashID = hash1(id, size);
   node* current = hashTable[hashID];
   node* previous = NULL;
   //there are no nodes at the hashID

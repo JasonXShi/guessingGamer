@@ -124,17 +124,28 @@ int main(){
       cout << "Enter the student's gpa " << endl;
       cin >> gpa;
       cin.get();
-      ids.push_back(id);
-      s = create(firstName, lastName, id, gpa);
-      int index = hash1(id, size);
-      bool valid = add(hashTable, index, s);
-      if(!valid){
-	//need to rehash the table
-	cout << "Rehashing..." << endl;
-	node* newHash[size * 2];
-	rehash(newHash, hashTable, size);
-	delete [] hashTable;
-	hashTable = newHash;
+      //checks if a duplicate id was entered
+      bool duplicate = false;
+      for(vector<int>::iterator it = ids.begin(); it != ids.end(); ++it){
+	if((*it) == id){
+	  duplicate = true;
+	}
+      }
+      if(!duplicate){
+	ids.push_back(id);
+	s = create(firstName, lastName, id, gpa);
+	int index = hash1(id, size);
+	bool valid = add(hashTable, index, s);
+	if(!valid){
+	  //need to rehash the table
+	  cout << "Rehashing..." << endl;
+	  node** newHash = new node*[size * 2];
+	  rehash(newHash, hashTable, size);
+	  delete [] hashTable;
+	  hashTable = newHash;
+	}
+      }else{
+	cout << "There is already another student with that ID number!" << endl;
       }
     }else if(strcmp(input, "rand") == 0){
       if(randStudent){
